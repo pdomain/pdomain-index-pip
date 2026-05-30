@@ -76,7 +76,7 @@ CLI through `uv run`. Never call bare `python`, `python3`, `pytest`, or
 **Why.** Direct invocation skips the project's `.venv` and the lockfile-pinned
 toolchain; tests pass locally and fail in CI (or vice versa) because the bare
 interpreter sees different installed package versions. `uv run` is uniformly
-fast (<200 ms warm) and always selects the project venv.
+fast (\<200 ms warm) and always selects the project venv.
 
 **Common high-confidence violations** (bot auto-fix candidates)
 

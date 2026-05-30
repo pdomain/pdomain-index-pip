@@ -2,6 +2,10 @@ _site/
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
+.ruff_cache/
+.basedpyright/
+.ci-ai.log
 
 # Claude Code session state — agent memory canonical home is
 # /workspaces/ocr-container/.claude/agent-memory/, not per-repo. If you

@@ -1,16 +1,16 @@
 name: regen-and-deploy
 
 # Rebuild the PEP 503 simple index from current GitHub Release assets across
-# the pd-* repos and deploy via GitHub Pages.
+# the pdomain Python repos and deploy via GitHub Pages artifact actions.
 #
 # Triggers:
-#   - schedule: daily (safety net — catches releases we didn't
-#     receive a dispatch for, e.g. if a pd-* repo's release.yml hasn't been
+#   - schedule: daily (safety net; catches releases we didn't
+#     receive a dispatch for, e.g. if a repo's release.yml hasn't been
 #     wired to ping us yet).
 #   - workflow_dispatch: manual rebuild from the Actions tab.
-#   - repository_dispatch type=pd-release-published: fired by individual pd-*
+#   - repository_dispatch type=pd-release-published: fired by individual pdomain
 #     repos after their release.yml publishes a new GitHub Release. Lets the
-#     index update instantly instead of waiting up to 15 min.
+#     index update instantly instead of waiting for the daily cron.
 #
 # Read-only public GitHub API access is enough for the regen script — the
 # default GITHUB_TOKEN can list releases on any public repo, no PAT needed.
@@ -21,11 +21,6 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [pd-release-published]
-  push:
-    branches: [main]
-    paths:
-      - "scripts/regen_index.py"
-      - ".github/workflows/regen.yml"
 
 permissions:
   contents: read
@@ -37,6 +32,7 @@ permissions:
 # (no Node-24-native release available) — this env var forces them onto 24.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  UV_PYTHON: "3.12"
 
 # Chore: review pinned action SHAs weekly. Update the version comment and the
 # full commit SHA together after checking the upstream release tag.
@@ -57,14 +53,14 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b  # v8.1.0
         with:
-          python-version: "3.12"
+          version: "0.11.16"
 
       - name: Regenerate simple index
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/regen_index.py --out _site/simple
+        run: make regen OUT=_site/simple
 
       - name: Add a friendly root landing page
         run: |
@@ -73,8 +69,8 @@ jobs:
           <html><head><title>pdomain-index-pip</title></head><body>
           <h1>pdomain-index-pip</h1>
           <p>Self-hosted PEP 503 simple Python package index for the
-          <code>pd-*</code> repos under
-          <a href="https://github.com/ConcaveTrillion">ConcaveTrillion</a>.</p>
+          pdomain Python repos under
+          <a href="https://github.com/pdomain">pdomain</a>.</p>
           <p>The index lives at <a href="simple/">simple/</a>.</p>
           <p>Source: <a href="https://github.com/pdomain/pdomain-index-pip">github.com/pdomain/pdomain-index-pip</a></p>
           </body></html>

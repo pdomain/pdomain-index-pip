@@ -1,0 +1,65 @@
+[project]
+name = "pdomain-index-pip-tools"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "actionlint-py>=1.7.12.24",
+    "basedpyright>=1.39.4",
+    "mdformat>=0.7.22",
+    "pytest>=8.3",
+    "ruff>=0.15.13",
+    "shellcheck-py>=0.11.0.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "ANN",
+    "B",
+    "E",
+    "F",
+    "I",
+    "RUF",
+    "S",
+    "SIM",
+    "T20",
+    "UP",
+    "W",
+]
+ignore = [
+    # ANN401 is too broad for JSON decoded from GitHub's API.
+    "ANN401",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = [
+    # Script output is user-facing progress.
+    "T201",
+    # The gh CLI invocation is fixed, argument-vector based, and not shell-expanded.
+    "S603",
+    "S607",
+]
+"tests/**/*.py" = [
+    # pytest uses assert statements.
+    "S101",
+]
+
+[tool.basedpyright]
+include = ["scripts", "tests"]
+exclude = ["**/__pycache__", "**/.venv"]
+typeCheckingMode = "recommended"
+failOnWarnings = true
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+addopts = ["-ra", "--strict-config"]
+pythonpath = ["."]
