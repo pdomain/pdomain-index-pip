@@ -4,7 +4,7 @@ name: regen-and-deploy
 # the pd-* repos and deploy via GitHub Pages.
 #
 # Triggers:
-#   - schedule: every 15 minutes (safety net — catches releases we didn't
+#   - schedule: daily (safety net — catches releases we didn't
 #     receive a dispatch for, e.g. if a pd-* repo's release.yml hasn't been
 #     wired to ping us yet).
 #   - workflow_dispatch: manual rebuild from the Actions tab.
@@ -17,7 +17,7 @@ name: regen-and-deploy
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "17 3 * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [pd-release-published]
@@ -38,6 +38,9 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
+# Chore: review pinned action SHAs weekly. Update the version comment and the
+# full commit SHA together after checking the upstream release tag.
+
 # Don't queue Pages deployments — if a newer regen kicks off mid-deploy,
 # let it finish and then run again. cancel-in-progress: false is the
 # documented setting for Pages workflows.
@@ -52,9 +55,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: "3.12"
 
@@ -77,11 +80,11 @@ jobs:
           </body></html>
           HTML
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d  # v6.0.0
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
         with:
           path: _site
 
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128  # v5.0.0
