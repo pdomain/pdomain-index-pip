@@ -77,3 +77,15 @@ jobs:
             --title "$TAG_NAME" \
             --generate-notes \
             --verify-tag
+
+  refresh-index:
+    name: refresh Pages index
+    needs: [publish-github-release]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Trigger regen-and-deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run regen.yml --repo "$GITHUB_REPOSITORY" --ref main
