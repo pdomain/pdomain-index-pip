@@ -109,6 +109,79 @@ def test_render_project_page_skips_duplicate_non_dist_unsafe_and_wrong_project_a
     assert "pd_book_tools-1.0.0-py3-none-any.whl" not in page
 
 
+FAKE_SHA256 = "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+
+
+def test_render_project_page_includes_sha256_fragment_when_digest_present() -> None:
+    releases: list[regen_index.IndexedRelease] = [
+        {
+            "tag": "v1.0.0",
+            "is_prerelease": False,
+            "published_at": "2026-01-01T00:00:00Z",
+            "assets": [
+                {
+                    "name": "pdomain_book_tools-1.0.0-py3-none-any.whl",
+                    "url": BOOK_TOOLS_100_WHEEL_URL,
+                    "digest": f"sha256:{FAKE_SHA256}",
+                },
+            ],
+        },
+    ]
+    page = regen_index.render_project_page(
+        repo="pdomain-book-tools",
+        project_normalized="pdomain-book-tools",
+        releases=releases,
+    )
+    assert f"#sha256={FAKE_SHA256}" in page
+
+
+def test_render_project_page_no_fragment_when_digest_absent() -> None:
+    releases: list[regen_index.IndexedRelease] = [
+        {
+            "tag": "v1.0.0",
+            "is_prerelease": False,
+            "published_at": "2026-01-01T00:00:00Z",
+            "assets": [
+                {
+                    "name": "pdomain_book_tools-1.0.0-py3-none-any.whl",
+                    "url": BOOK_TOOLS_100_WHEEL_URL,
+                },
+            ],
+        },
+    ]
+    page = regen_index.render_project_page(
+        repo="pdomain-book-tools",
+        project_normalized="pdomain-book-tools",
+        releases=releases,
+    )
+    assert "#sha256=" not in page
+    assert BOOK_TOOLS_100_WHEEL_URL in page
+
+
+def test_render_project_page_no_fragment_when_digest_not_sha256() -> None:
+    releases: list[regen_index.IndexedRelease] = [
+        {
+            "tag": "v1.0.0",
+            "is_prerelease": False,
+            "published_at": "2026-01-01T00:00:00Z",
+            "assets": [
+                {
+                    "name": "pdomain_book_tools-1.0.0-py3-none-any.whl",
+                    "url": BOOK_TOOLS_100_WHEEL_URL,
+                    "digest": "md5:abc123",
+                },
+            ],
+        },
+    ]
+    page = regen_index.render_project_page(
+        repo="pdomain-book-tools",
+        project_normalized="pdomain-book-tools",
+        releases=releases,
+    )
+    assert "#sha256=" not in page
+    assert BOOK_TOOLS_100_WHEEL_URL in page
+
+
 def test_fetch_releases_fails_for_configured_repo_not_found(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

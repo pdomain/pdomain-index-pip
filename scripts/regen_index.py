@@ -45,6 +45,7 @@ REPOS: list[str] = [
 class GitHubAsset(TypedDict, total=False):
     name: str
     url: str
+    digest: str
 
 
 class GitHubReleaseSummary(TypedDict, total=False):
@@ -217,6 +218,9 @@ def render_project_page(repo: str, project_normalized: str, releases: list[Index
                 print(f"  {repo}: skipping unsafe asset URL for {fname}", file=sys.stderr)
                 continue
             seen.add(fname)
+            digest = a.get("digest", "")
+            if digest.startswith("sha256:"):
+                url = url + "#sha256=" + digest[len("sha256:") :]
             lines.append(f'<a href="{html.escape(url)}">{html.escape(fname)}</a><br>')
     lines.append("</body></html>")
     return "\n".join(lines) + "\n"
