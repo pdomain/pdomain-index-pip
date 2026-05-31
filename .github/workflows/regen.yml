@@ -8,6 +8,8 @@ name: regen-and-deploy
 #     receive a dispatch for, e.g. if a repo's release.yml hasn't been
 #     wired to ping us yet).
 #   - workflow_dispatch: manual rebuild from the Actions tab.
+#   - workflow_call: called by release.yml after publishing this repo's
+#     GitHub Release.
 #   - repository_dispatch type=pd-release-published: fired by individual pdomain
 #     repos after their release.yml publishes a new GitHub Release. Lets the
 #     index update instantly instead of waiting for the daily cron.
@@ -19,6 +21,7 @@ on:
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
+  workflow_call:
   repository_dispatch:
     types: [pd-release-published]
 
