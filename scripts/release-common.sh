@@ -107,7 +107,11 @@ pd_release_main() {
 
     if [ -f ".github/workflows/release.yml" ]; then
         echo "Triggering release workflow for $VERSION..."
-        gh workflow run release.yml --ref "$RELEASE_BRANCH" -f "tag=$VERSION"
+        if [ -n "${RELEASE_REPO:-}" ]; then
+            gh workflow run release.yml --repo "$RELEASE_REPO" --ref "$RELEASE_BRANCH" -f "tag=$VERSION"
+        else
+            gh workflow run release.yml --ref "$RELEASE_BRANCH" -f "tag=$VERSION"
+        fi
     fi
 
     echo ""

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import subprocess
+from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
@@ -48,7 +50,20 @@ def test_asset_download_url_is_limited_to_repo_release_downloads(url: str, expec
     assert regen_index.asset_download_url_is_safe("pdomain-book-tools", url) is expected
 
 
-def test_render_project_page_skips_duplicate_non_dist_and_unsafe_assets() -> None:
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("pdomain_book_tools-1.0.0-py3-none-any.whl", "pdomain-book-tools"),
+        ("pdomain_book_tools-1.0.0.tar.gz", "pdomain-book-tools"),
+        ("pdomain_book_tools-1.0.0.zip", "pdomain-book-tools"),
+        ("README.md", None),
+    ],
+)
+def test_distribution_name_from_asset(filename: str, expected: str | None) -> None:
+    assert regen_index.distribution_name_from_asset(filename) == expected
+
+
+def test_render_project_page_skips_duplicate_non_dist_unsafe_and_wrong_project_assets() -> None:
     releases: list[regen_index.IndexedRelease] = [
         {
             "tag": "v1.0.0",
@@ -71,6 +86,13 @@ def test_render_project_page_skips_duplicate_non_dist_and_unsafe_assets() -> Non
                     "name": "evil-1.0.0.whl",
                     "url": "https://example.com/evil-1.0.0.whl",
                 },
+                {
+                    "name": "pd_book_tools-1.0.0-py3-none-any.whl",
+                    "url": (
+                        "https://github.com/pdomain/pdomain-book-tools/releases/download/"
+                        "v1.0.0/pd_book_tools-1.0.0-py3-none-any.whl"
+                    ),
+                },
             ],
         },
     ]
@@ -84,6 +106,41 @@ def test_render_project_page_skips_duplicate_non_dist_and_unsafe_assets() -> Non
     assert page.count("pdomain_book_tools-1.0.0-py3-none-any.whl") == 2
     assert "README.md" not in page
     assert "evil-1.0.0.whl" not in page
+    assert "pd_book_tools-1.0.0-py3-none-any.whl" not in page
+
+
+def test_fetch_releases_fails_for_configured_repo_not_found(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_gh_json(_args: Sequence[str]) -> object:
+        raise subprocess.CalledProcessError(
+            returncode=1,
+            cmd=["gh"],
+            stderr="Could not resolve to a Repository",
+        )
+
+    monkeypatch.setattr(regen_index, "gh_json", fake_gh_json)
+
+    with pytest.raises(RuntimeError, match="configured repo not found"):
+        _ = regen_index.fetch_releases("pdomain-missing")
+
+
+def test_fetch_releases_fails_at_release_limit(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fake_gh_json(_args: Sequence[str]) -> object:
+        return [
+            {
+                "tagName": "v1.0.0",
+                "isDraft": False,
+                "isPrerelease": False,
+                "publishedAt": "2026-01-01T00:00:00Z",
+            }
+        ]
+
+    monkeypatch.setattr(regen_index, "RELEASE_LIMIT", 1)
+    monkeypatch.setattr(regen_index, "gh_json", fake_gh_json)
+
+    with pytest.raises(RuntimeError, match="release limit"):
+        _ = regen_index.fetch_releases("pdomain-book-tools")
 
 
 def test_main_writes_simple_index_with_mocked_release_fetch(
@@ -119,3 +176,23 @@ def test_main_writes_simple_index_with_mocked_release_fetch(
     )
     assert '<a href="pdomain-book-tools/">pdomain-book-tools</a><br>' in root
     assert "pdomain_book_tools-1.0.0.tar.gz" in project
+
+
+def test_main_replaces_existing_output_tree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "simple"
+    stale = out / "pdomain-old"
+    stale.mkdir(parents=True)
+    _ = (stale / "index.html").write_text("stale", encoding="utf-8")
+
+    def fake_fetch_releases(_repo: str) -> list[regen_index.IndexedRelease]:
+        return []
+
+    monkeypatch.setattr(regen_index, "REPOS", ["pdomain-book-tools"])
+    monkeypatch.setattr(regen_index, "fetch_releases", fake_fetch_releases)
+    monkeypatch.setattr("sys.argv", ["regen_index.py", "--out", str(out)])
+
+    assert regen_index.main() == 0
+    assert not stale.exists()
+    assert (out / "index.html").exists()

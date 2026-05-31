@@ -14,8 +14,10 @@ import argparse
 import html
 import json
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from collections.abc import Sequence
 from pathlib import Path
 from typing import TypedDict, cast
@@ -99,9 +101,8 @@ def asset_download_url_is_safe(repo: str, url: str) -> bool:
 def fetch_releases(repo: str) -> list[IndexedRelease]:
     """Return non-draft releases for pdomain/<repo>, with assets.
 
-    Returns [] if the repo doesn't exist or has no releases. Errors other than
-    not-found are re-raised — we want the workflow to fail loudly on auth or
-    rate-limit problems rather than silently emit a stale empty page.
+    Returns [] if the repo has no releases. gh errors are hard failures so a
+    stale allowlist entry cannot publish an incomplete index.
     """
     try:
         rels = gh_json(
@@ -118,17 +119,15 @@ def fetch_releases(repo: str) -> list[IndexedRelease]:
         )
     except subprocess.CalledProcessError as e:
         if is_repo_not_found_error(e):
-            print(f"  {repo}: repo not found, skipping", file=sys.stderr)
-            return []
+            raise RuntimeError(f"{ORG}/{repo}: configured repo not found") from e
         raise
 
     out: list[IndexedRelease] = []
     release_summaries = cast(list[GitHubReleaseSummary], rels)
     if len(release_summaries) >= RELEASE_LIMIT:
-        print(
-            f"  {repo}: reached release limit {RELEASE_LIMIT}; older releases may be omitted",
-            file=sys.stderr,
-        )
+        msg = f"{ORG}/{repo}: reached release limit {RELEASE_LIMIT}; "
+        msg += "increase pagination before publishing a truncated index"
+        raise RuntimeError(msg)
     for rel in release_summaries:
         if rel.get("isDraft"):
             continue
@@ -150,8 +149,7 @@ def fetch_releases(repo: str) -> list[IndexedRelease]:
             )
         except subprocess.CalledProcessError as e:
             if is_repo_not_found_error(e):
-                print(f"  {repo}@{tag}: release not found, skipping tag", file=sys.stderr)
-                continue
+                raise RuntimeError(f"{ORG}/{repo}@{tag}: release disappeared during regen") from e
             raise
         release_assets = cast(GitHubReleaseAssets, view)
         out.append(
@@ -166,6 +164,25 @@ def fetch_releases(repo: str) -> list[IndexedRelease]:
 
 
 _DIST_SUFFIXES = (".whl", ".tar.gz", ".zip")
+
+
+def distribution_name_from_asset(filename: str) -> str | None:
+    """Return the normalized distribution name encoded in a wheel or sdist."""
+    if filename.endswith(".whl"):
+        return normalize(filename.split("-", 1)[0])
+
+    stem = ""
+    if filename.endswith(".tar.gz"):
+        stem = filename[: -len(".tar.gz")]
+    elif filename.endswith(".zip"):
+        stem = filename[: -len(".zip")]
+    else:
+        return None
+
+    match = re.match(r"(?P<name>.+)-(?P<version>[0-9][A-Za-z0-9.!+_-]*)$", stem)
+    if not match:
+        return None
+    return normalize(match.group("name"))
 
 
 def render_project_page(repo: str, project_normalized: str, releases: list[IndexedRelease]) -> str:
@@ -183,6 +200,13 @@ def render_project_page(repo: str, project_normalized: str, releases: list[Index
         for a in rel["assets"]:
             fname = a.get("name", "")
             if not fname.endswith(_DIST_SUFFIXES):
+                continue
+            asset_project = distribution_name_from_asset(fname)
+            if asset_project != project_normalized:
+                print(
+                    f"  {repo}: skipping asset for {asset_project or 'unknown project'}: {fname}",
+                    file=sys.stderr,
+                )
                 continue
             if fname in seen:
                 continue
@@ -214,6 +238,25 @@ def render_root_page(repos: list[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def write_index(out: Path) -> int:
+    total_assets = 0
+    for repo in REPOS:
+        n = normalize(repo)
+        proj_dir = out / n
+        proj_dir.mkdir(parents=True, exist_ok=True)
+        releases = fetch_releases(repo)
+        page = render_project_page(repo=repo, project_normalized=n, releases=releases)
+        _ = (proj_dir / "index.html").write_text(page, encoding="utf-8")
+        n_assets = page.count("<a href=")
+        total_assets += n_assets
+        print(f"  {n}: {len(releases)} releases, {n_assets} dist assets")
+
+    _ = (out / "index.html").write_text(render_root_page(REPOS), encoding="utf-8")
+    print(f"wrote root index -> {out / 'index.html'}")
+    print(f"total assets indexed: {total_assets}")
+    return 0
+
+
 def parse_output_dir(argv: Sequence[str] | None = None) -> Path:
     ap = argparse.ArgumentParser(description=__doc__)
     _ = ap.add_argument(
@@ -228,26 +271,21 @@ def parse_output_dir(argv: Sequence[str] | None = None) -> Path:
 
 def main() -> int:
     out = parse_output_dir()
-    out.mkdir(parents=True, exist_ok=True)
-
-    total_assets = 0
-    for repo in REPOS:
-        n = normalize(repo)
-        proj_dir = out / n
-        proj_dir.mkdir(parents=True, exist_ok=True)
-        releases = fetch_releases(repo)
-        page = render_project_page(repo=repo, project_normalized=n, releases=releases)
-        _ = (proj_dir / "index.html").write_text(page, encoding="utf-8")
-        n_assets = sum(
-            1 for r in releases for a in r["assets"] if a.get("name", "").endswith(_DIST_SUFFIXES)
-        )
-        total_assets += n_assets
-        print(f"  {n}: {len(releases)} releases, {n_assets} dist assets")
-
-    _ = (out / "index.html").write_text(render_root_page(REPOS), encoding="utf-8")
-    print(f"wrote root index -> {out / 'index.html'}")
-    print(f"total assets indexed: {total_assets}")
-    return 0
+    out_parent = out.parent
+    out_parent.mkdir(parents=True, exist_ok=True)
+    tmp_out = Path(tempfile.mkdtemp(prefix=f".{out.name}.", dir=out_parent))
+    try:
+        exit_code = write_index(tmp_out)
+        if out.exists():
+            if out.is_dir():
+                shutil.rmtree(out)
+            else:
+                out.unlink()
+        _ = tmp_out.rename(out)
+        return exit_code
+    finally:
+        if tmp_out.exists():
+            shutil.rmtree(tmp_out)
 
 
 if __name__ == "__main__":

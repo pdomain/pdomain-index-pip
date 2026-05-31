@@ -85,7 +85,33 @@ jobs:
     permissions:
       actions: write
     steps:
-      - name: Trigger regen-and-deploy
+      - name: Trigger and wait for regen-and-deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run regen.yml --repo "$GITHUB_REPOSITORY" --ref main
+        run: |
+          started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          gh workflow run regen.yml --repo "$GITHUB_REPOSITORY" --ref main
+
+          run_id=""
+          for _ in $(seq 1 30); do
+            run_id=$(gh run list \
+              --repo "$GITHUB_REPOSITORY" \
+              --workflow regen.yml \
+              --event workflow_dispatch \
+              --branch main \
+              --limit 10 \
+              --json databaseId,createdAt \
+              --jq ".[] | select(.createdAt >= \"$started_at\") | .databaseId" \
+              | head -n 1)
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "$run_id" ]; then
+            echo "ERROR: did not find queued regen-and-deploy run" >&2
+            exit 1
+          fi
+
+          gh run watch "$run_id" --repo "$GITHUB_REPOSITORY" --exit-status

@@ -38,6 +38,11 @@ explicit = false
 1. Renders PEP 503 simple-index HTML into `_site/simple/`.
 1. Deploys `_site/` via [`actions/deploy-pages`](https://github.com/actions/deploy-pages) — no commits are made to `main` from CI.
 
+The generator only indexes distribution assets whose normalized package name
+matches the generated simple-index project page. Historical `pd_*` assets in
+renamed repos are intentionally skipped rather than published under the new
+`pdomain-*` package names.
+
 To trigger an immediate rebuild without waiting for cron, individual release workflows can dispatch a `pd-release-published` event to this repo (one HTTP call with a fine-grained PAT). The daily cron is the safety net.
 
 ## Repos covered

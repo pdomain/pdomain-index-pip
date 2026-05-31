@@ -99,7 +99,10 @@ static-check: lint-check typecheck actionlint shell-check docs-check ## Run all 
 
 pre-commit-check: static-check ## Workspace-compatible alias for static checks
 
-ci: setup static-check test ## Run complete local CI
+ci: ## Run complete local CI
+	@$(MAKE) --no-print-directory setup
+	@$(MAKE) --no-print-directory static-check
+	@$(MAKE) --no-print-directory test
 
 ci-slow: ci ## Full pre-flight alias; no extra slow checks exist today
 
