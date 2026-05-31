@@ -131,7 +131,7 @@ def update_pyproject_uv_version(path: Path, *, version: str) -> bool:
     )
     if updated == text:
         return False
-    path.write_text(updated, encoding="utf-8")
+    _ = path.write_text(updated, encoding="utf-8")
     return True
 
 

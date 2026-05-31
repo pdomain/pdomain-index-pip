@@ -43,7 +43,7 @@ matches the generated simple-index project page. Historical `pd_*` assets in
 renamed repos are intentionally skipped rather than published under the new
 `pdomain-*` package names.
 
-To trigger an immediate rebuild without waiting for cron, individual release workflows can dispatch a `pd-release-published` event to this repo (one HTTP call with a fine-grained PAT). The daily cron is the safety net.
+To trigger an immediate rebuild without waiting for cron, individual release workflows can dispatch a `pdomain-release-published` event to this repo (one HTTP call with a fine-grained PAT). The daily cron is the safety net.
 
 ## Repos covered
 
