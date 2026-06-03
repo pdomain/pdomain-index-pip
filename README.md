@@ -49,6 +49,12 @@ To trigger an immediate rebuild without waiting for cron, individual release wor
 
 The list lives in `scripts/regen_index.py` (`REPOS`). Adding a new Python-distribution repo: append it there, push, and run `regen-and-deploy` manually if the daily cron is too slow.
 
+## Tooling Releases
+
+This repo's own releases are tag-only tooling releases. Package versions indexed by
+this repo come from publisher GitHub Release assets, not this repo's metadata version.
+GitHub-generated release notes are canonical for tooling releases.
+
 ## Why not just publish to PyPI?
 
 Eventually we may. This index is a stepping stone: it speaks the same protocol PyPI does, so migrating later is a matter of `uv publish` + dropping the `--extra-index-url` flag. No wheel changes, no metadata changes.
