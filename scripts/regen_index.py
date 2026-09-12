@@ -13,16 +13,15 @@ from __future__ import annotations
 import argparse
 import html
 import json
-import os
 import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from collections.abc import Sequence
 from pathlib import Path
 from typing import TypedDict, cast
 from urllib.parse import unquote, urlparse
+from uuid import uuid4
 
 ORG = "pdomain"
 RELEASE_LIMIT = 1000
@@ -71,20 +70,6 @@ class IndexedRelease(TypedDict):
 
 class ParsedArgs(argparse.Namespace):
     out: Path = Path("_site/simple")
-
-
-def _shared_dir_mode() -> int:
-    """The mode a plain ``mkdir`` would produce here: 0777 minus the umask.
-
-    ``os.umask`` has no read-only form, so reading the umask means setting it
-    to zero and putting it back. Do that once at import rather than per call.
-    """
-    value = os.umask(0)
-    _ = os.umask(value)
-    return 0o777 & ~value
-
-
-_DIR_MODE = _shared_dir_mode()
 
 
 def normalize(name: str) -> str:
@@ -294,14 +279,12 @@ def main() -> int:
     out = parse_output_dir()
     out_parent = out.parent
     out_parent.mkdir(parents=True, exist_ok=True)
-    tmp_out = Path(tempfile.mkdtemp(prefix=f".{out.name}.", dir=out_parent))
-    # mkdtemp creates at 0700 and ignores the umask by design, and a rename
-    # preserves that mode, so without this the published index directory is
-    # unreadable to any other uid. Keep whatever special bits mkdtemp already
-    # inherited: a setgid parent passes setgid down, and a plain 0o777 mask
-    # would strip it, breaking group inheritance for everything written later.
-    special = tmp_out.stat().st_mode & 0o7000
-    tmp_out.chmod(_DIR_MODE | special)
+    # Not mkdtemp: that creates at 0700 and ignores the umask, and a rename
+    # preserves the mode, so the published index would be unreadable to any
+    # other uid. Passing the mode to mkdir lets the kernel apply the umask, and
+    # a setgid parent still passes setgid down, so nothing here computes a mode.
+    tmp_out = out_parent / f".{out.name}.{uuid4().hex}.tmp"
+    tmp_out.mkdir(mode=0o777)
     try:
         exit_code = write_index(tmp_out)
         if out.exists():
