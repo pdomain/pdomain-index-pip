@@ -56,8 +56,13 @@ include = ["scripts", "tests"]
 exclude = ["**/__pycache__", "**/.venv"]
 typeCheckingMode = "recommended"
 failOnWarnings = true
-venvPath = "."
-venv = ".venv"
+# venvPath/venv are deliberately unset. This workspace names its environment
+# ".venv-container" via UV_PROJECT_ENVIRONMENT, so a hardcoded ".venv" silently
+# resolves a stale environment: after any merge that changes uv.lock, every new
+# third-party symbol reports as a missing attribute until .venv is re-synced.
+# Run under `uv run` and basedpyright resolves from the active interpreter.
+# Matches pdomain-book-tools, pdomain-ocr-labeler-spa and pdomain-pgdp-measure,
+# which unset these for the same reason.
 
 [tool.pytest.ini_options]
 addopts = ["-ra", "--strict-config"]

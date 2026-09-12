@@ -4,6 +4,12 @@
 AI ?=
 LOG := .ci-ai.log
 
+# uv installs into UV_PROJECT_ENVIRONMENT when it is set and into .venv
+# otherwise, so mirror that rule rather than hardcoding either name. The
+# pd-suite devcontainer sets ".venv-container" because the workspace is a bind
+# mount shared with the host; a plain checkout outside a container gets .venv.
+VENV := $(if $(UV_PROJECT_ENVIRONMENT),$(UV_PROJECT_ENVIRONMENT),.venv)
+
 ifdef AI
 _goals := $(or $(MAKECMDGOALS),ci)
 .PHONY: $(_goals)
@@ -29,7 +35,7 @@ setup: ## Install locked development dependencies
 install: setup ## Alias for setup
 
 remove-venv: ## Remove the virtual environment
-	rm -rf .venv
+	rm -rf $(VENV)
 
 reset-venv: reset ## Alias for reset
 
