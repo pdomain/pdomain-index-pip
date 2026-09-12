@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -70,6 +71,13 @@ class IndexedRelease(TypedDict):
 
 class ParsedArgs(argparse.Namespace):
     out: Path = Path("_site/simple")
+
+
+def _current_umask() -> int:
+    """Read the process umask without leaving it changed."""
+    value = os.umask(0)
+    _ = os.umask(value)
+    return value
 
 
 def normalize(name: str) -> str:
@@ -280,6 +288,13 @@ def main() -> int:
     out_parent = out.parent
     out_parent.mkdir(parents=True, exist_ok=True)
     tmp_out = Path(tempfile.mkdtemp(prefix=f".{out.name}.", dir=out_parent))
+    # mkdtemp creates at 0700 and ignores the umask by design, and a rename
+    # preserves that mode, so without this the published index directory is
+    # unreadable to any other uid. Keep whatever special bits mkdtemp already
+    # inherited: a setgid parent passes setgid down, and a plain 0o777 mask
+    # would strip it, breaking group inheritance for everything written later.
+    special = tmp_out.stat().st_mode & 0o7000
+    tmp_out.chmod((0o777 & ~_current_umask()) | special)
     try:
         exit_code = write_index(tmp_out)
         if out.exists():
