@@ -1,6 +1,10 @@
-______________________________________________________________________
-
-## Status: active Owner: CT Created: 2026-07-21 Last verified: 2026-07-21 Kind: plan
+---
+Status: active
+Owner: CT
+Created: 2026-07-21
+Last verified: 2026-07-21
+Kind: plan
+---
 
 # GitHub CLI Executable Resolution Implementation Plan
 
@@ -114,9 +118,7 @@ def gh_json(args: Sequence[str]) -> object:
     executable = shutil.which("gh")
     if executable is None:
         raise RuntimeError("gh executable not found on PATH")
-    proc = subprocess.run(
-        [executable, *args], capture_output=True, text=True, check=True
-    )
+    proc = subprocess.run([executable, *args], capture_output=True, text=True, check=True)
     return cast(object, json.loads(proc.stdout))
 ```
 

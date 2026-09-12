@@ -26,7 +26,7 @@ Wheels themselves live as **GitHub Release assets** in each individual repo. Thi
 
 Once GitHub Pages is enabled on this repo, the index will be live at:
 
-```
+```text
 https://pdomain.github.io/pdomain-index-pip/simple/
 ```
 

@@ -55,7 +55,7 @@ The repo depends on bare `mdformat>=0.7.22` (`pyproject.toml:11`) with no
 frontmatter plugin. Given a frontmatter block, mdformat rewrites the opening
 `---` as a thematic break and collapses every field into one heading:
 
-```
+```text
 ---                          ______________________________________________________________________
 kind: handoff
 status: "active"      -->    ## kind: handoff status: "active" created: "2026-07-17" ...

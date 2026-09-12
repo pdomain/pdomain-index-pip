@@ -1,6 +1,10 @@
-______________________________________________________________________
-
-## Status: active Owner: CT Created: 2026-07-21 Last verified: 2026-07-21 Kind: spec
+---
+Status: active
+Owner: CT
+Created: 2026-07-21
+Last verified: 2026-07-21
+Kind: spec
+---
 
 # Resolve the GitHub CLI before index regeneration
 

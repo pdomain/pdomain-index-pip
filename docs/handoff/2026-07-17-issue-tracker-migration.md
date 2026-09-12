@@ -112,7 +112,7 @@ exist); the acting account has admin rights on the repo (required later for
 1. **Pull every in-scope issue verbatim.** For each of the 20 open issues
    (and optionally `#19` for completeness):
 
-   ```
+   ```bash
    gh issue view N --repo pdomain/pdomain-index-pip \
      --json number,title,author,createdAt,closedAt,state,stateReason,labels,body,comments,url
    ```
