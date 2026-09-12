@@ -73,11 +73,18 @@ class ParsedArgs(argparse.Namespace):
     out: Path = Path("_site/simple")
 
 
-def _current_umask() -> int:
-    """Read the process umask without leaving it changed."""
+def _shared_dir_mode() -> int:
+    """The mode a plain ``mkdir`` would produce here: 0777 minus the umask.
+
+    ``os.umask`` has no read-only form, so reading the umask means setting it
+    to zero and putting it back. Do that once at import rather than per call.
+    """
     value = os.umask(0)
     _ = os.umask(value)
-    return value
+    return 0o777 & ~value
+
+
+_DIR_MODE = _shared_dir_mode()
 
 
 def normalize(name: str) -> str:
@@ -294,7 +301,7 @@ def main() -> int:
     # inherited: a setgid parent passes setgid down, and a plain 0o777 mask
     # would strip it, breaking group inheritance for everything written later.
     special = tmp_out.stat().st_mode & 0o7000
-    tmp_out.chmod((0o777 & ~_current_umask()) | special)
+    tmp_out.chmod(_DIR_MODE | special)
     try:
         exit_code = write_index(tmp_out)
         if out.exists():
