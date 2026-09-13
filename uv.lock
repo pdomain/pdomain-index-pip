@@ -189,11 +189,11 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "actionlint-py", specifier = ">=1.7.12.24" },
-    { name = "basedpyright", specifier = ">=1.39.4" },
-    { name = "mdformat", specifier = ">=0.7.22" },
+    { name = "basedpyright", specifier = ">=1.40.1" },
+    { name = "mdformat", specifier = ">=1.0.0" },
     { name = "mdformat-frontmatter", specifier = ">=2.1.2" },
     { name = "pre-commit", specifier = ">=4.6,<5" },
-    { name = "pytest", specifier = ">=8.3" },
+    { name = "pytest", specifier = ">=9.1" },
     { name = "ruff", specifier = ">=0.16.7" },
     { name = "shellcheck-py", specifier = ">=0.11.0.1" },
 ]
