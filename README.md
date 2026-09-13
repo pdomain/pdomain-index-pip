@@ -68,11 +68,13 @@ the full rationale. A direct local wheel path needs no index option.
 
 ## How it stays up to date
 
-`.github/workflows/regen.yml` runs daily and on `workflow_dispatch` / `repository_dispatch`. It:
+Run `./scripts/publish-index.sh` after cutting a release. Nothing rebuilds the index on its own: the workflows were removed on 2026-09-13, so this script is the whole path. It:
 
 1. Calls `scripts/regen_index.py`, which uses the GitHub API (read-only, public, no PAT required) to enumerate every release asset across the configured pdomain repos.
-1. Renders PEP 503 simple-index HTML into `_site/simple/`.
-1. Deploys `_site/` via [`actions/deploy-pages`](https://github.com/actions/deploy-pages) — no commits are made to `master` from CI.
+1. Renders PEP 503 simple-index HTML into `simple/`.
+1. Commits the result to the `gh-pages` branch and pushes it. GitHub Pages serves that branch directly.
+
+Use `DRY_RUN=1 ./scripts/publish-index.sh` to build the index and show what would change without committing or pushing.
 
 The generator only indexes distribution assets whose normalized package name
 matches the generated simple-index project page. Historical `pd_*` assets in
@@ -83,11 +85,11 @@ The complete trust boundary, fail-closed behavior, and digest handling are
 documented in the
 [release-asset index architecture](docs/architecture/python-release-asset-index.md).
 
-To trigger an immediate rebuild without waiting for cron, individual release workflows can dispatch a `pdomain-release-published` event to this repo (one HTTP call with a fine-grained PAT). The daily cron is the safety net.
+There is no cron and no safety net. A release that is not followed by `./scripts/publish-index.sh` stays invisible to installers, because the index is built from release assets rather than from the repos themselves.
 
 ## Repos covered
 
-The list lives in `scripts/regen_index.py` (`REPOS`). Adding a new Python-distribution repo: append it there, push, and run `regen-and-deploy` manually if the daily cron is too slow.
+The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distribution repo, append it there and run `./scripts/publish-index.sh`. A repo missing from that list is never indexed, however many releases it has.
 
 ## Tooling Releases
 
@@ -128,6 +130,7 @@ make smoke-regen
 
 Releases are repo-code releases only. Use `make release-patch`,
 `make release-minor`, or `make release-major`; the script runs `make ci`,
-pushes the exact tag, and dispatches `.github/workflows/release.yml`.
+pushes the exact tag, then builds the artifacts and creates the GitHub
+Release itself.
 
 Repository contributors and assistants start with [AGENTS.md](AGENTS.md).

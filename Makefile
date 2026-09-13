@@ -108,7 +108,13 @@ test-k: ## Run tests by pytest -k expression (usage: make test-k K='pattern')
 	uv run pytest tests -q -k "$(K)"
 
 actionlint: ## Lint GitHub Actions workflows
-	uv run actionlint .github/workflows/*.yml
+	@# The workflows were removed on 2026-09-13; nothing runs on GitHub now.
+	@# Keep the target so it starts working again if a workflow comes back.
+	@if ls .github/workflows/*.yml >/dev/null 2>&1; then \
+		uv run actionlint .github/workflows/*.yml; \
+	else \
+		echo "  [actionlint] no workflows present — skipping."; \
+	fi
 
 shell-check: ## Check shell scripts with ShellCheck
 	uv run shellcheck -x scripts/*.sh
