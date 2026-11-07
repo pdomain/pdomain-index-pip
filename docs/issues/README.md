@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-15
-Last verified: 2026-07-15
+Last verified: 2026-11-06
 Kind: process
 Level: I1
 ---
@@ -14,7 +14,7 @@ Level: I1
 - **Kind:** process
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-07-15
+- **Last verified:** 2026-11-06
 - **Read when:** filing an issue or checking active and migrated issue records.
 - **Search terms:** issues folder, issue report, migration, issue lifecycle.
 
@@ -30,25 +30,32 @@ external issue tracker.
 - Name migrated GitHub records `YYYY-MM-DD-gh-NNN-short-slug.md`.
 - Keep frontmatter and Agent Index lifecycle fields consistent.
 - Use `Status: active` for unresolved work.
-- On resolution, route through `doc-retirer`: promote anything durable into the
-  doc that owns it, delete the report, and write a tombstone to
+- On resolution, route through `doc-retirer`. Promote anything durable into the
+  doc that owns it. Delete the report. Write a tombstone to
   `docs/context/decisions.md`. Git history keeps the report.
 - Link each record from governed context.
 - Stage each record before reindexing and running the strict docgraph check.
 - Copy `docs/issues/TEMPLATE.md` when creating a report. The template is
-  excluded from the index and must not be linked as a governed node.
+  excluded from the index. It must not be linked as a governed node.
 
 ## Open issues
 
-- [Resolve the gh executable before subprocess invocation](2026-07-19-gh-021-resolve-gh-executable.md)
-  — active.
-- [Rename sweep tracking cluster](2026-07-19-gh-001-015-rename-sweep.md) —
-  needs owner decision.
-- [Weekly dep-refresh cannot fully auto-land: branches accumulate and are
-  never deleted](2026-08-08-dep-refresh-cannot-auto-land.md) — active.
-- Migration records are listed in the [intent map](../context/intent-map.md).
+The full remaining-work list, including deferred items with no issue file, is
+the [roadmap](../roadmap.md). These issue files are still open:
 
-## Where resolved work is recorded
+- Resolve `gh` before subprocess invocation —
+  [issue](2026-07-19-gh-021-resolve-gh-executable.md),
+  [plan](../plans/2026-07-21-gh-executable-resolution.md).
+- The rename cluster still needs a disposition —
+  [issue](2026-07-19-gh-001-015-rename-sweep.md),
+  [plan](../plans/2026-07-21-rename-cluster-supersession-closeout.md).
+- Dep-refresh branch accumulation, after the workflow file was deleted —
+  [issue](2026-08-08-dep-refresh-cannot-auto-land.md).
 
-- Completed GitHub issues are recorded in the
-  [migration ledger](../context/github-issue-migration-ledger.md).
+## Where shipped work is recorded
+
+Shipped index behavior is the
+[release-asset index architecture](../architecture/python-release-asset-index.md).
+
+The [migration ledger](../context/github-issue-migration-ledger.md) records
+deleted GitHub issues.

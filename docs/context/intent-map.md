@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-14
-Last verified: 2026-07-14
+Last verified: 2026-11-06
 Kind: context
 -->
 
@@ -13,7 +13,7 @@ Kind: context
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-14
-- **Last verified:** 2026-07-14
+- **Last verified:** 2026-11-06
 - **Kind:** context
 - **Read when:** evaluating direction, deferred work, rejected approaches, or owner decisions.
 - **Search terms:** active intent, deferred work, rejected direction, owner decision.
@@ -31,10 +31,10 @@ Kind: context
   mappings. Evidence: [README](../../README.md#why-not-just-publish-to-pypi).
 - **Deferred:** Automate the audit between live lint suppressions and the
   [suppression catalogue](../conventions/lint-deviations.md). The migration
-  verified the catalogue manually; no automated drift gate exists.
+  verified the catalogue manually. No automated drift gate exists.
 - **Deferred:** Replace or validate the space-delimited `RELEASE_VERSION_FILES`
   contract in `scripts/release-common.sh`. The current helper trusts a
-  maintainer-provided environment value and cannot represent paths with spaces.
+  maintainer-provided environment value. It cannot represent paths with spaces.
 
 ## Rejected directions
 
@@ -49,17 +49,31 @@ None.
 
 ## Needs owner decision
 
-- **Needs owner decision:** What remains of the pd-index rename effort. Fifteen
-  former GitHub tracking issues (#1–#15) cannot be classified: the plan defining
-  their work is absent from `/workspaces`, and the `pd-index-pip` target naming
-  was superseded by the `pdomain-*` rename. Legacy `pd-*` names still appear in
-  other repositories, so some sweep work is real but may belong on
-  `pdomain-ops`. Evidence:
-  [rename sweep record](../issues/2026-07-19-gh-001-015-rename-sweep.md).
+- **Needs owner decision:** What remains of the pd-index rename effort. The
+  2026-05-16 plan those issues pointed at is still absent. A 2026-07-21 spec
+  and closeout plan say to close the cluster as superseded. They also say not
+  to create a legacy-name sweep. Every task in that plan is unchecked. The
+  issue resolution is still open. Evidence:
+  [rename sweep record](../issues/2026-07-19-gh-001-015-rename-sweep.md),
+  [closeout spec](../specs/2026-07-21-rename-cluster-supersession-design.md),
+  [closeout plan](../plans/2026-07-21-rename-cluster-supersession-closeout.md).
+- **Needs owner decision:** Whether the dep-refresh branch issue still needs
+  the reusable-branch fix. Commit `4a91b14` (2026-09-13) deleted
+  `.github/workflows/dep-refresh.yml` with the other GitHub Actions workflows.
+  Leftover remote `dep-refresh/*` branches and `delete_branch_on_merge` are
+  unverified. Evidence:
+  [dep-refresh issue](../issues/2026-08-08-dep-refresh-cannot-auto-land.md).
 
 ## Legacy-unverified sweep
 
-The 2026-07-14 migration classified `AGENTS.md`, `CLAUDE.md`, `CONVENTIONS.md`,
-`docs/conventions/ignored-surfaces.md`, `docs/conventions/lint-deviations.md`,
-and `docs/process/writing-style.md` as still active. The evidence is recorded in
-the [2026-07-14 legacy-guidance decision](decisions.md#2026-07-14--verify-legacy-guidance-as-active).
+The 2026-07-14 migration classified these files as still active:
+
+- `AGENTS.md`
+- `CLAUDE.md`
+- `CONVENTIONS.md`
+- `docs/conventions/ignored-surfaces.md`
+- `docs/conventions/lint-deviations.md`
+- `docs/process/writing-style.md`
+
+The evidence is recorded in the
+[2026-07-14 legacy-guidance decision](decisions.md#2026-07-14--verify-legacy-guidance-as-active).

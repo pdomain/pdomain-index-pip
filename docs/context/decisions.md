@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-14
-Last verified: 2026-07-14
+Last verified: 2026-11-06
 Kind: context
 -->
 
@@ -13,7 +13,7 @@ Kind: context
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-14
-- **Last verified:** 2026-07-14
+- **Last verified:** 2026-11-06
 - **Kind:** context
 - **Read when:** checking durable repository decisions and their evidence.
 - **Search terms:** decisions, docgraph migration, spec lifecycle, lint suppression.
@@ -113,3 +113,23 @@ Kind: context
 - **Remaining work:** none for the migration. Issue #21's work — resolving the
   `gh` executable — remains open in `docs/issues/`, and the rename cluster
   remains `needs-owner-decision`.
+
+### 2026-11-06 — The roadmap lists only remaining work
+
+- **Context:** On 2026-07-19 the owner rejected a `docs/roadmap.md` that would
+  archive every GitHub issue before deletion. That archive was never written.
+  Open work later sat in issue files, two plans, and the intent map.
+- **Decision:** Add `docs/roadmap.md` as a short list of work that is still
+  unfinished. Do not archive closed issues there. Shipped index behavior stays
+  in `docs/architecture/python-release-asset-index.md`. This replaces the
+  2026-07-19 choice not to create a roadmap, for a remaining-work list only.
+  It does not revive the archive-then-delete pattern.
+- **Rationale:** A remaining-work list is a different document from the
+  rejected archive. Readers can see what is left without rereading the
+  migration.
+- **Evidence:** This documentation pass. Neither open plan is implemented.
+  `gh_json()` still calls `subprocess.run(["gh", *args])` in
+  `scripts/regen_index.py`, and every task in the rename closeout plan is
+  unchecked. `uv run pytest tests/test_regen_index.py` passed 18 tests on
+  2026-11-06. Commit `4a91b14` removed the GitHub Actions workflows.
+- **Remaining work:** the list in `docs/roadmap.md`.
