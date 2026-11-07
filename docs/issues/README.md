@@ -57,5 +57,7 @@ the [roadmap](../roadmap.md). These issue files are still open:
 Shipped index behavior is the
 [release-asset index architecture](../architecture/python-release-asset-index.md).
 
-The [migration ledger](../context/github-issue-migration-ledger.md) records
-deleted GitHub issues.
+The [migration ledger](../context/github-issue-migration-ledger.md) maps former
+GitHub issues to their destinations. The
+[deletion journal](../context/github-issue-deletion-journal.md) records their
+deletion and verification.

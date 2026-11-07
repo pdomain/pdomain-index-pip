@@ -133,3 +133,12 @@ Kind: context
   unchecked. `uv run pytest tests/test_regen_index.py` passed 18 tests on
   2026-11-06. Commit `4a91b14` removed the GitHub Actions workflows.
 - **Remaining work:** the list in `docs/roadmap.md`.
+
+### 2026-11-07 — Correct the roadmap decision's historical context
+
+- **Correction:** The 2026-11-06 entry conflates the proposed roadmap with a
+  separate issue archive. The owner rejected a roadmap plus a separate
+  archive-then-delete pattern. The separate archive was never written.
+- **Evidence:** The 2026-07-19 retirement entry above records the rejected
+  pattern and the choice of governed `docs/issues/` records instead.
+- **Decision unchanged:** The roadmap lists remaining work only.

@@ -36,9 +36,10 @@ Open work is the [roadmap](../roadmap.md).
 
 GitHub Issues is disabled, so `docs/issues/` is the issue tracker.
 
-The audit trail for the 2026-07-19 deletion of all 21 GitHub issues is the
-[migration ledger](github-issue-migration-ledger.md) and the
-[deletion journal](github-issue-deletion-journal.md).
+The [migration ledger](github-issue-migration-ledger.md) maps all 21 former
+GitHub issues to their governed destinations. The
+[deletion journal](github-issue-deletion-journal.md) records their deletion
+and verification on 2026-07-19.
 
 ## Risks and test health
 
