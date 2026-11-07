@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-21
-Last verified: 2026-07-21
+Last verified: 2026-11-07
 Kind: plan
 ---
 
@@ -14,7 +14,7 @@ Kind: plan
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-21
-- **Last verified:** 2026-07-21
+- **Last verified:** 2026-11-07
 - **Read when:** closing the obsolete rename cluster.
 - **Search terms:** rename cluster, superseded, closeout, doc-retirer.
 
@@ -27,6 +27,10 @@ Kind: plan
 **Tech Stack:** Markdown, docgraph lifecycle tools, Git
 
 **Spec:** [Close the obsolete pd-index rename cluster as superseded](../specs/2026-07-21-rename-cluster-supersession-design.md)
+
+Checked against the issue and authored context on 2026-11-07: no closeout task
+has been applied. Obtain the owner's disposition before execution. The
+dep-refresh decision and deferred work also remain open.
 
 ______________________________________________________________________
 
@@ -54,9 +58,13 @@ Markdown, docgraph lifecycle tools, and Git.
 
 - Modify: `docs/issues/2026-07-19-gh-001-015-rename-sweep.md`
 
-- Modify: `docs/context/current-state.md`
+- Verify: `docs/context/current-state.md`
 
 - Modify: `docs/context/intent-map.md`
+
+- Modify: `docs/roadmap.md`
+
+- Append: `docs/context/decisions.md`
 
 - [ ] **Step 1: Start governed retirement**
 
@@ -77,17 +85,23 @@ Set the resolution prose to:
 ```markdown
 ## Resolution
 
-Superseded on 2026-07-21. The workspace completed a later `pdomain-*` rename,
+Superseded on <actual closeout date>. The workspace completed a later `pdomain-*` rename,
 so the absent `pd-index-pip` plan no longer defines valid implementation work.
 No replacement sweep is authorized. File a new scoped workspace issue if
 current, non-historical legacy names still need cleanup.
 ```
 
-Use the status selected by `docgraph:doc-retirer`. Preserve provenance and historical evidence.
+Use the status and surviving destination selected by `docgraph:doc-retirer`.
+Preserve provenance and historical evidence there. If the issue is removed,
+record its tombstone and repair inbound references as that workflow requires.
 
 - [ ] **Step 3: Reconcile authored context**
 
-Remove the rename record from `docs/context/current-state.md` and state that only the active `gh` issue remains. Remove the rename entry and empty owner-decision section from `docs/context/intent-map.md`. Do not add a sweep elsewhere.
+Remove only the rename entry from `docs/context/intent-map.md` and
+`docs/roadmap.md`. Preserve the dep-refresh owner decision, the active `gh`
+issue, and all deferred work. Keep `docs/context/current-state.md` pointing to
+the roadmap. Append the approved disposition to `docs/context/decisions.md`.
+Do not add a sweep elsewhere.
 
 - [ ] **Step 4: Run lifecycle and docs gates**
 
@@ -104,7 +118,7 @@ Expected: all commands pass.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add docs/issues/2026-07-19-gh-001-015-rename-sweep.md docs/context/current-state.md docs/context/intent-map.md
+git add -A -- docs/issues/2026-07-19-gh-001-015-rename-sweep.md docs/context/intent-map.md docs/context/decisions.md docs/roadmap.md
 git commit -m "docs: close rename cluster as superseded"
 ```
 
@@ -117,6 +131,10 @@ git commit -m "docs: close rename cluster as superseded"
 - Verify: `docs/context/current-state.md`
 
 - Verify: `docs/context/intent-map.md`
+
+- Verify: `docs/roadmap.md`
+
+- Verify: `docs/context/decisions.md`
 
 - [ ] **Step 1: Search active context**
 

@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-19
-Last verified: 2026-07-19
+Last verified: 2026-11-07
 Kind: issue
 Level: I1
 ---
@@ -14,9 +14,9 @@ Level: I1
 - **Kind:** issue
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-07-19
+- **Last verified:** 2026-11-07
 - **Resolution:** Open
-- **Severity:** Low - PATH hijacking only; no injection path
+- **Severity:** Low - implicit executable resolution and unclear missing-tool failure
 - **Affected version:** `scripts/regen_index.py` at commit `e2244e1`
 - **Read when:** hardening `scripts/regen_index.py` subprocess calls, or
   responding to bandit B404/B603/B607 findings.
@@ -28,47 +28,48 @@ Level: I1
 ## Summary
 
 `gh_json()` invokes `gh` by bare name, so the executable is resolved through
-`PATH` at call time. Resolving it explicitly removes a PATH-hijacking path in a
-compromised local or CI environment. Filed from the deep review and security
+`PATH` at call time. The planned change makes the executable path explicit and
+adds a clear missing-tool error. It does not establish trust in a binary found
+on a compromised `PATH`. Filed from the deep review and security
 scan report `reports/security-review-2026-05-22/pd-index-pip.md`, and confirmed
-still present on 2026-07-19.
+still present in `scripts/regen_index.py` on 2026-11-07.
 
 ## Impact
 
 - Anyone running `scripts/regen_index.py` in an environment where `PATH` can be
-  influenced, including CI runners.
+  influenced.
 - Severity is low. The call passes `shell=False` with static, internal
   arguments, so command injection is not the concern. The residual risk is that
   a compromised `PATH` supplies a different `gh` binary.
 
 ## Environment / versions
 
-Applies to every environment that runs the index regeneration: local
-development, the `regen-and-deploy` scheduled workflow, and the release
-workflow. Python 3.12 and 3.13 are both supported by this repository
-(`requires-python = ">=3.12"`), and the defect is independent of Python version.
+Applies to local `make regen` and `scripts/publish-index.sh`, which calls it.
+The GitHub Actions workflows were removed in commit `4a91b14`. The project
+declares Python `>=3.12`; the defect is independent of Python version.
 
 ## Evidence
 
-Observations, verified 2026-07-19 against current source:
+Observations, verified 2026-11-07 against current source:
 
-- `scripts/regen_index.py:80` calls
+- `scripts/regen_index.py:82` calls
   `subprocess.run(["gh", *args], capture_output=True, text=True, check=True)`.
 - `scripts/regen_index.py:17` imports `shutil`, but only for `shutil.rmtree` at
-  lines 285 and 292. Nothing in this module resolves an executable.
-- `scripts/update_github_actions.py:43` already resolves its executable with
-  `shutil.which(name)`, so the repository has an established pattern.
+  lines 292 and 299. Nothing in this module resolves an executable.
+- Commit `23ffe01` removed `scripts/update_github_actions.py`, which the
+  original issue cited as a `shutil.which` example.
+- `tests/test_regen_index.py` has no test for `gh_json()` executable resolution
+  or its missing-tool failure.
 
 The original report cited bandit `B404` at `scripts/regen_index.py:17`, and
 `B607` and `B603` at `scripts/regen_index.py:47-49`. Line numbers have shifted
-since filing; the current call site is line 80.
+since filing; the current call site is line 82.
 
 ## Root-cause hypotheses
 
-1. The helper was written before `update_github_actions.py` established the
-   `shutil.which` pattern, and was never revisited. Confirming this needs only a
-   glance at the two files' Git history; no runtime investigation is required,
-   because the defect is directly visible in the source.
+1. The helper still relies on subprocess executable lookup. Its exact
+   missing-tool behavior is not covered by a focused test. The source shows
+   that no explicit resolution or named missing-tool error has been added.
 
 ## Defects to fix
 
@@ -81,7 +82,7 @@ since filing; the current call site is line 80.
 1. Resolve `gh` with `shutil.which("gh")` and fail with a clear error when it
    returns `None`.
 1. Pass the resolved absolute path to `subprocess.run`, keeping `shell=False`.
-1. Follow the existing approach in `scripts/update_github_actions.py:43`.
+1. Follow the [executable-resolution plan](../plans/2026-07-21-gh-executable-resolution.md).
 1. Add a test covering the missing-`gh` failure path.
 
 ## Resolution

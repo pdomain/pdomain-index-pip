@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-21
-Last verified: 2026-07-14
+Last verified: 2026-11-07
 Kind: process
 -->
 
@@ -13,7 +13,7 @@ Kind: process
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-21
-- **Last verified:** 2026-07-14
+- **Last verified:** 2026-11-07
 - **Kind:** process
 - **Read when:** changing source, tests, tooling, documentation, or lint configuration.
 - **Search terms:** repository conventions, uv run, lint suppressions, design specs.

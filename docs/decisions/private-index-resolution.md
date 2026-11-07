@@ -1,3 +1,11 @@
+---
+Status: active
+Owner: CT
+Created: 2026-07-13
+Last verified: 2026-11-07
+Kind: decision
+---
+
 # Resolve pdomain packages through an explicit index
 
 ## Agent Index
@@ -5,7 +13,7 @@
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-13
-- **Last verified:** 2026-07-13
+- **Last verified:** 2026-11-07
 - **Kind:** decision
 
 ## Context
@@ -22,8 +30,8 @@ map each private pdomain distribution to it with `[tool.uv.sources]`. This is th
 repeatable package-to-index mechanism.
 
 One-off commands must pin the target distribution to a direct wheel or artifact
-URL instead of adding the private index as an unrestricted `--index`. Use the
-authenticated artifact URL when access is private, and retain the generated
+URL instead of adding the private index as an unrestricted `--index`. Configure
+authentication for the artifact host when access is private, and retain the generated
 `#sha256=` fragment when one is available. A direct requirement fixes the target
 package's source while leaving PyPI available for public transitive
 dependencies.

@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-08-08
-Last verified: 2026-08-08
+Last verified: 2026-11-07
 Kind: issue
 Level: I1
 ---
@@ -14,7 +14,7 @@ Level: I1
 - **Kind:** issue
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-08-08
+- **Last verified:** 2026-11-07
 - **Resolution:** Open
 - **Severity:** Low - branch-list noise only; dependency updates are landing
 - **Affected version:** `.github/workflows/dep-refresh.yml` at commit `d0c2cc6`
@@ -26,6 +26,14 @@ Level: I1
   (different repository, cited as the authority for the fix; read-only here).
 
 ## Summary
+
+Local verification on 2026-11-07: commit `4a91b14` removed
+`.github/workflows/dep-refresh.yml` and the other workflows on 2026-09-13.
+The scheduled branch producer no longer exists in this checkout. Remote
+branch counts, protection, and `delete_branch_on_merge` were not rechecked.
+The owner still needs to decide whether any cleanup or settings change is
+wanted. The observations below describe the 2026-08-08 snapshot, not current
+GitHub state.
 
 **The weekly `dep-refresh` workflow opens a new dated branch every run and
 never deletes it, so branches accumulate.** As of 2026-08-08 there are 7 stray
@@ -131,6 +139,13 @@ Observations, verified 2026-08-08 against current source and the GitHub API:
 
 ## Next steps
 
+First decide whether the remaining remote-branch cleanup or repository setting
+still needs action. Verify live branch and merge settings before proposing
+changes. Do not recreate the deleted workflow to apply the old prescription.
+
+The original proposal below applies only if dependency-refresh automation is
+deliberately restored:
+
 The pdomain-ui spec at `docs/specs/2026-07-16-dep-refresh-auto-land-design.md`
 (in the `pdomain-ui` repository, read-only from here) is the design authority
 for this fix. Its Design section B and C apply directly to this repo:
@@ -151,4 +166,5 @@ for this fix. Its Design section B and C apply directly to this repo:
 
 ## Resolution
 
-Open.
+Open for owner disposition after workflow removal. The local code review did
+not verify or authorize deletion of any remote branch or a settings change.

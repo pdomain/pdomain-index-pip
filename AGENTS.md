@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-21
-Last verified: 2026-07-19
+Last verified: 2026-11-07
 Kind: process
 ---
 
@@ -13,13 +13,13 @@ Kind: process
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-21
-- **Last verified:** 2026-07-19
+- **Last verified:** 2026-11-07
 - **Kind:** process
 - **Read when:** planning, implementing, reviewing, or verifying repository work.
 - **Search terms:** development workflow, worktree, CI, delegation, verification.
 
-Canonical agent context for the `pdomain-index-pip` repo. `CLAUDE.md` is a
-symlink to this file; Codex and other assistants read this file directly.
+Canonical agent context for the `pdomain-index-pip` repo. [CLAUDE.md](CLAUDE.md)
+is a symlink to this file; Codex and other assistants read this file directly.
 
 ## Before coding
 
@@ -48,7 +48,7 @@ change any step below.
 
 1. **Check the working tree.** `git status --short`. Surface or resolve stray
    uncommitted work before starting — don't build on it.
-1. **Read repo guidance.** This repo's `AGENTS.md` and `CONVENTIONS.md` for
+1. **Read repo guidance.** This repo's `AGENTS.md` and [CONVENTIONS.md](CONVENTIONS.md) for
    repo-specific rules. `CLAUDE.md` is a symlink to `AGENTS.md`.
 1. **Consult repository context.** Read [DOCGRAPH.md](DOCGRAPH.md) when present,
    then use its retrieval workflow and authored `docs/context/` ground truth.
@@ -56,8 +56,9 @@ change any step below.
    `plans/` (the work plan), `specs/` (design specs — follow any `Spec:`
    pointer from the issue), `research/` (prior investigations), `decisions/`
    (ADRs / constraints), `architecture/` (shipped design).
-1. **Check live issue status.** `gh issue view <N> --repo <owner/repo>` —
-   confirm it isn't already closed; note its milestone.
+1. **Check live issue status.** Read the governed record in
+   [docs/issues/](docs/issues/README.md) and its linked plan. GitHub Issues is
+   disabled; the [roadmap](docs/roadmap.md) lists remaining work.
 1. **Check for in-flight work.** Open PRs and existing branches touching the
    same area, to avoid colliding with work-in-progress.
 1. **Consult agent memory.** `.claude/agent-memory/<repo>/feedback_*.md` for
@@ -99,7 +100,7 @@ GitHub release assets and publishes it as a static site.
 
 - **Language:** Python, managed with `uv` (`uv.lock` present).
 - **Source:** `scripts/` — `regen_index.py` (index generator),
-  `update_github_actions.py`, `do-release.sh`, `release-common.sh`.
+  `publish-index.sh` (local publication), `do-release.sh`, `release-common.sh`.
 - **Tests:** `tests/`, pytest.
 - **Docs:** `docs/`, governed by docgraph (`docgraph.toml`, `DOCGRAPH.md`,
   authored ground truth under `docs/context/`).
@@ -113,7 +114,8 @@ GitHub release assets and publishes it as a static site.
 
 ## Commands and gates
 
-`make ci` is the full local gate and is what CI runs. Run it before committing.
+`make ci` is the full local gate. Run it before committing. The GitHub Actions
+workflows were removed on 2026-09-13.
 
 - `make ci` — complete local CI.
 - `make static-check` — read-only checks: lint, typecheck, actionlint,
@@ -129,8 +131,8 @@ Underlying tools, when a narrower run is needed:
 - `uv run ruff format`
 - `uv run basedpyright`
 
-Repository scripts: `scripts/regen_index.py`, `scripts/update_github_actions.py`,
-`scripts/do-release.sh`.
+Repository scripts: `scripts/regen_index.py`, `scripts/publish-index.sh`,
+`scripts/do-release.sh`, and `scripts/release-common.sh`.
 
 <!-- <<< repo-setup:commands-and-gates -->
 

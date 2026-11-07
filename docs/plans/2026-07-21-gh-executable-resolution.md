@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-21
-Last verified: 2026-07-21
+Last verified: 2026-11-07
 Kind: plan
 ---
 
@@ -14,7 +14,7 @@ Kind: plan
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-21
-- **Last verified:** 2026-07-21
+- **Last verified:** 2026-11-07
 - **Read when:** implementing the GitHub CLI executable-resolution issue.
 - **Search terms:** gh executable, implementation plan, shutil.which, S607.
 
@@ -27,6 +27,9 @@ Kind: plan
 **Tech Stack:** Python 3.12+, `shutil.which`, `subprocess`, pytest, Ruff, basedpyright
 
 **Spec:** [Resolve the GitHub CLI before index regeneration](../specs/2026-07-21-gh-executable-resolution-design.md)
+
+Checked against source on 2026-11-07: the helper still passes bare `gh`, neither
+proposed test exists, and the `S607` exception remains. All tasks stay unchecked.
 
 ______________________________________________________________________
 

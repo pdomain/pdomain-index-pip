@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-06
-Last verified: 2026-07-14
+Last verified: 2026-11-07
 Kind: usage
 -->
 
@@ -13,7 +13,7 @@ Kind: usage
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-06
-- **Last verified:** 2026-07-14
+- **Last verified:** 2026-11-07
 - **Kind:** usage
 - **Read when:** using, operating, or developing the package index.
 - **Search terms:** pip index, uv index, release assets, local development.
@@ -70,11 +70,17 @@ the full rationale. A direct local wheel path needs no index option.
 
 Run `./scripts/publish-index.sh` after cutting a release. Nothing rebuilds the index on its own: the workflows were removed on 2026-09-13, so this script is the whole path. It:
 
-1. Calls `scripts/regen_index.py`, which uses the GitHub API (read-only, public, no PAT required) to enumerate every release asset across the configured pdomain repos.
+1. Calls `scripts/regen_index.py`, which reads release metadata through the GitHub API across the configured pdomain repos.
 1. Renders PEP 503 simple-index HTML into `simple/`.
 1. Commits the result to the `gh-pages` branch and pushes it. GitHub Pages serves that branch directly.
 
 Use `DRY_RUN=1 ./scripts/publish-index.sh` to build the index and show what would change without committing or pushing.
+
+The publish script requires `GH_TOKEN` or a signed-in `gh` session from which
+`gh auth token` can retrieve a token. That token must allow reads of the
+configured repositories' releases. Publishing also needs Git push access to
+the index repository. Configure GitHub Pages to serve from the `gh-pages`
+branch.
 
 The generator only indexes distribution assets whose normalized package name
 matches the generated simple-index project page. Historical `pd_*` assets in
@@ -93,9 +99,12 @@ The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distri
 
 ## Tooling Releases
 
-This repo's own releases are tag-only tooling releases. Package versions indexed by
-this repo come from publisher GitHub Release assets, not this repo's metadata version.
-GitHub-generated release notes are canonical for tooling releases.
+This repo's own tooling releases do not build a Python distribution.
+`scripts/do-release.sh` sets `RELEASE_BUILD=":"`. The shared release helper
+creates a GitHub Release and attaches matching files already present under
+`dist/`, if any; otherwise it releases the tag alone. Package versions indexed
+by this repo come from publisher GitHub Release assets, not this repo's metadata
+version. GitHub-generated release notes are canonical for tooling releases.
 
 ## Why not just publish to PyPI?
 
@@ -115,7 +124,7 @@ The pdomain Python repos already follow a few habits to keep that door open:
 ## Local dry-run
 
 ```sh
-gh auth status              # any GitHub auth is fine; only public reads
+gh auth status              # needs read access to the configured releases
 uv run python scripts/regen_index.py --out /tmp/pdomain-index-pip-out/simple
 ls /tmp/pdomain-index-pip-out/simple/
 ```
@@ -130,7 +139,7 @@ make smoke-regen
 
 Releases are repo-code releases only. Use `make release-patch`,
 `make release-minor`, or `make release-major`; the script runs `make ci`,
-pushes the exact tag, then builds the artifacts and creates the GitHub
-Release itself.
+pushes the release branch and exact tag, and creates the GitHub Release.
+It does not rebuild or publish the index.
 
 Repository contributors and assistants start with [AGENTS.md](AGENTS.md).

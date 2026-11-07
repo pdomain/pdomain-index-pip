@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-19
-Last verified: 2026-07-19
+Last verified: 2026-11-07
 Kind: reference
 Level: I1
 ---
@@ -14,7 +14,7 @@ Level: I1
 - **Kind:** reference
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-07-19
+- **Last verified:** 2026-11-07
 - **Read when:** auditing which GitHub issues were permanently deleted, when,
   by whom, and where their content went.
 - **Search terms:** deletion journal, issue deletion, audit trail, node ID,
@@ -84,3 +84,12 @@ above and pushed before the next batch begins.
 
 - [Migration ledger](github-issue-migration-ledger.md)
 - [Migration runbook](../runbooks/github-issues-to-docgraph-migration.md)
+
+## Record validation on 2026-11-07
+
+The 21 issue IDs and digests match the migration ledger and rename record.
+Every destination path still exists. Git commits `b5a6858`, `095149d`, and
+`6666daf` record the three completed deletion batches, and commit `3c9a4df`
+contains the governed destinations. The deletion rows remain unchanged.
+This check validates the local audit record; it does not repeat the historical
+GitHub API checks or assert current organization settings.

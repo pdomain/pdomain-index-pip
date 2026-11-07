@@ -3,7 +3,7 @@ kind: runbook
 status: implemented
 owner: CT
 created: 2026-07-19
-last_verified: 2026-07-19
+last_verified: 2026-11-07
 ---
 
 # GitHub issues to docgraph migration — pdomain-index-pip
@@ -12,8 +12,8 @@ last_verified: 2026-07-19
 
 - **Kind:** runbook
 - **Status:** implemented
-- **Read when:** executing the GitHub Issues cutover for `pdomain-index-pip`, or
-  checking whether this repo is ready for it.
+- **Last verified:** 2026-11-07
+- **Read when:** auditing the completed GitHub Issues cutover for `pdomain-index-pip`.
 - **Search terms:** issue migration, docgraph, delete issues, deletion journal,
   mdformat frontmatter, rename sweep, index hardening.
 
@@ -26,6 +26,19 @@ last_verified: 2026-07-19
 > the record of how the cutover ran, not as pending work. The gate table below
 > is preserved as the pre-cutover snapshot; gates 6 and 8 were both resolved
 > before deletion began.
+
+Checked against local code and Git history on 2026-11-07: commit `e3d1b98`
+records completion, and the ledger, journal, and governed destinations remain
+present. `pyproject.toml` includes `mdformat-frontmatter`, and
+`.pre-commit-config.yaml` was added in commit `1549d08`. The GitHub workflows
+were removed in commit `4a91b14`; active plans and specs now exist under
+`docs/plans/` and `docs/specs/`.
+
+Everything below is the historical migration procedure and its pre-cutover
+observations. Its references to failing gates, workflows, missing pre-commit
+configuration, workspace paths, and branch state describe that time. They are
+not current operating instructions. Current operation is documented in the
+[README](../../README.md). Current GitHub settings were not rechecked here.
 
 ## What this adapts, and what changed
 

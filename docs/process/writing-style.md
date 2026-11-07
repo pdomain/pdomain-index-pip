@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-28
-Last verified: 2026-07-14
+Last verified: 2026-11-07
 Kind: process
 -->
 
@@ -13,7 +13,7 @@ Kind: process
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-28
-- **Last verified:** 2026-07-14
+- **Last verified:** 2026-11-07
 - **Kind:** process
 - **Read when:** writing or reviewing reader-facing prose.
 - **Search terms:** readability, writing style, documentation, reader-facing prose.

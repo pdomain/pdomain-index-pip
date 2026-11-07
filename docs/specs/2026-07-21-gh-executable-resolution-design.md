@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-21
-Last verified: 2026-07-21
+Last verified: 2026-11-07
 Kind: spec
 ---
 
@@ -14,7 +14,7 @@ Kind: spec
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-21
-- **Last verified:** 2026-07-21
+- **Last verified:** 2026-11-07
 - **Read when:** implementing or reviewing GitHub CLI invocation in the index generator.
 - **Search terms:** gh executable, shutil.which, subprocess, PATH, index regeneration.
 - **Relates to:** [active issue](../issues/2026-07-19-gh-021-resolve-gh-executable.md)
@@ -22,7 +22,11 @@ Kind: spec
 
 ## The generator will resolve `gh` before every invocation
 
-`gh_json()` will call `shutil.which("gh")` before it starts a subprocess and pass the returned path as argument zero. This follows `scripts/update_github_actions.py`.
+`gh_json()` will call `shutil.which("gh")` before it starts a subprocess and pass the returned path as argument zero. The earlier example, `scripts/update_github_actions.py`, was removed in commit `23ffe01`.
+
+Checked against source on 2026-11-07: `gh_json()` still passes bare `gh`, its
+focused resolution tests are absent, and the `S607` exception remains in
+`pyproject.toml`. This spec is still unimplemented.
 
 The helper will raise `RuntimeError("gh executable not found on PATH")` when resolution fails. The failure occurs before subprocess creation.
 
