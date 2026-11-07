@@ -69,6 +69,10 @@ upgrade-deps: ## Upgrade locked development dependencies and sync
 	uv lock --upgrade
 	uv sync --group dev
 
+.PHONY: update-hooks
+update-hooks: ## Bump hooks to their latest releases, frozen to commit SHAs
+	uv run pre-commit autoupdate --freeze
+
 format: ## Format Python and Markdown files
 	uv run ruff format scripts tests
 	uv run ruff check --select I --fix scripts tests
