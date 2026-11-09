@@ -93,7 +93,7 @@ Kind: context
   issues were already implemented.
 - **Why deleted on 2026-11-09:** Retired docs live in Git history, not the live
   tree. It was first kept as a session-continuity record. The runbook now names it
-  as a Git-history reference instead of a link. Removal commit: (fill after commit)
+  as a Git-history reference instead of a link. Removal commit: `d8bf26cd`
 - **Remaining work:** none.
 
 ### 2026-07-19 Implemented: GitHub issues to docgraph migration runbook
