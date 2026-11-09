@@ -80,8 +80,8 @@ Kind: context
 
 ### 2026-07-19 Retired: Issue tracker migration pickup prompt
 
-- **Old path:** `docs/handoff/2026-07-17-issue-tracker-migration.md` (kept, not
-  deleted)
+- **Old path:** `docs/handoff/2026-07-17-issue-tracker-migration.md` (deleted
+  2026-11-09; read it with `git show 1549d08:docs/handoff/2026-07-17-issue-tracker-migration.md`)
 - **Outcome:** superseded
 - **Superseded by:** `docs/runbooks/github-issues-to-docgraph-migration.md`
 - **Rationale kept:** The handoff proposed a `docs/roadmap.md` plus
@@ -91,10 +91,9 @@ Kind: context
   `5238389` and `4a774a6` fixed, and the absence of `.pre-commit-config.yaml` in
   this repo. Its scope assumption did not hold — five of the six index-hardening
   issues were already implemented.
-- **Why kept rather than deleted:** It is a session-continuity record, already
-  marked `retired` with `superseded_by` set, and the runbook links it to explain
-  what it replaced. Deleting it would break that inbound reference without
-  recovering anything.
+- **Why deleted on 2026-11-09:** Retired docs live in Git history, not the live
+  tree. It was first kept as a session-continuity record. The runbook now names it
+  as a Git-history reference instead of a link. Removal commit: (fill after commit)
 - **Remaining work:** none.
 
 ### 2026-07-19 Implemented: GitHub issues to docgraph migration runbook

@@ -298,6 +298,6 @@ cutover immediately rather than retrying with a different issue ID.
 
 - Shared source runbook:
   `/workspaces/shared-devtools/docs/runbooks/github-issues-to-docgraph-migration-prompt.md`
-- Superseded plan: [`docs/handoff/2026-07-17-issue-tracker-migration.md`](../handoff/2026-07-17-issue-tracker-migration.md)
+- Superseded plan: `docs/handoff/2026-07-17-issue-tracker-migration.md`, retired; in Git history at `1549d08`
 - Repo docgraph rules: [`DOCGRAPH.md`](../../DOCGRAPH.md)
 - Architecture record: [`docs/architecture/python-release-asset-index.md`](../architecture/python-release-asset-index.md)
