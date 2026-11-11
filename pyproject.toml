@@ -46,8 +46,6 @@ select = [
     "T201",
     # S603: subprocesses use fixed argument vectors or a shutil.which-resolved executable.
     "S603",
-    # S607: regen_index intentionally resolves the trusted gh CLI from PATH.
-    "S607",
 ]
 "tests/**/*.py" = [
     # pytest uses assert statements.
