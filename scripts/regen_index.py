@@ -79,7 +79,10 @@ def normalize(name: str) -> str:
 
 def gh_json(args: Sequence[str]) -> object:
     """Run `gh` with --json output and parse. Raise on non-zero."""
-    proc = subprocess.run(["gh", *args], capture_output=True, text=True, check=True)
+    executable = shutil.which("gh")
+    if executable is None:
+        raise RuntimeError("gh executable not found on PATH")
+    proc = subprocess.run([executable, *args], capture_output=True, text=True, check=True)
     return cast(object, json.loads(proc.stdout))
 
 

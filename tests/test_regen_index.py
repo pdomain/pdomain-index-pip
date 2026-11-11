@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import subprocess
 from collections.abc import Sequence
 from pathlib import Path
@@ -34,6 +35,43 @@ def test_repo_allowlist_uses_current_pdomain_names() -> None:
     assert "pdomain-ops" in regen_index.REPOS
     assert "pdomain-ocr-ops" not in regen_index.REPOS
     assert not any(repo.startswith("pd-") for repo in regen_index.REPOS)
+
+
+def test_gh_json_fails_clearly_when_gh_is_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def gh_not_found(_name: str) -> str | None:
+        return None
+
+    def unexpected_run(*_args: object, **_kwargs: object) -> None:
+        pytest.fail("subprocess.run must not be called when gh is missing")
+
+    monkeypatch.setattr(shutil, "which", gh_not_found)
+    monkeypatch.setattr(subprocess, "run", unexpected_run)
+    with pytest.raises(RuntimeError, match=r"^gh executable not found on PATH$"):
+        _ = regen_index.gh_json(["api", "rate_limit"])
+
+
+def test_gh_json_runs_the_resolved_gh_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def gh_in_tools(name: str) -> str:
+        return f"/tools/{name}"
+
+    observed: dict[str, object] = {}
+
+    def fake_run(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        observed["command"] = command
+        observed["kwargs"] = kwargs
+        return subprocess.CompletedProcess(command, 0, stdout='{"ok": true}')
+
+    monkeypatch.setattr(shutil, "which", gh_in_tools)
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    assert regen_index.gh_json(["api", "rate_limit"]) == {"ok": True}
+    assert observed == {
+        "command": ["/tools/gh", "api", "rate_limit"],
+        "kwargs": {"capture_output": True, "text": True, "check": True},
+    }
 
 
 @pytest.mark.parametrize(
