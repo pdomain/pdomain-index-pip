@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-15
-Last verified: 2026-11-06
+Last verified: 2026-11-10
 Kind: process
 Level: I1
 ---
@@ -14,7 +14,7 @@ Level: I1
 - **Kind:** process
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-10
 - **Read when:** filing an issue or checking active and migrated issue records.
 - **Search terms:** issues folder, issue report, migration, issue lifecycle.
 
@@ -43,9 +43,6 @@ external issue tracker.
 The full remaining-work list, including deferred items with no issue file, is
 the [roadmap](../roadmap.md). These issue files are still open:
 
-- Resolve `gh` before subprocess invocation —
-  [issue](2026-07-19-gh-021-resolve-gh-executable.md),
-  [plan](../plans/2026-07-21-gh-executable-resolution.md).
 - The rename cluster still needs a disposition —
   [issue](2026-07-19-gh-001-015-rename-sweep.md),
   [plan](../plans/2026-07-21-rename-cluster-supersession-closeout.md).

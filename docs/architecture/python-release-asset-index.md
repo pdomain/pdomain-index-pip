@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-13
-Last verified: 2026-11-06
+Last verified: 2026-11-10
 Kind: architecture
 ---
 
@@ -13,7 +13,7 @@ Kind: architecture
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-13
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-10
 - **Kind:** architecture
 
 The index is a generated PEP 503 view over Python distributions attached to
@@ -61,12 +61,16 @@ pagination must be raised before a truncated index can be published.
 
 ## GitHub CLI invocation
 
-`gh_json()` in `scripts/regen_index.py` starts `gh` by bare name, with
-`shell=False` and a fixed argument list. The process `PATH` chooses the
-binary. A missing `gh` shows up as a subprocess failure.
+`gh_json()` in `scripts/regen_index.py` resolves `gh` with
+`shutil.which("gh")` before it starts a subprocess. It passes the returned path
+as argument zero, with `shell=False` and a fixed argument list.
 
-An absolute path and a dedicated missing-tool error are still open on the
-[roadmap](../roadmap.md).
+When `gh` is not on `PATH`, `gh_json()` raises
+`RuntimeError("gh executable not found on PATH")` and starts no subprocess.
+Regeneration stops and leaves the previous output in place.
+
+`PATH` still chooses the binary. The generator does not check the binary's
+contents, so a compromised `PATH` directory can still supply a different `gh`.
 
 ## Integrity metadata
 
@@ -116,8 +120,10 @@ runs `./scripts/publish-index.sh`.
 ## Evidence
 
 - Code: `scripts/regen_index.py`, `scripts/publish-index.sh`
-- Tests: `tests/test_regen_index.py` — 18 passed on 2026-11-06
+- Tests: `tests/test_regen_index.py` — 20 passed on 2026-11-10
   (`test_repo_allowlist_uses_current_pdomain_names`,
+  `test_gh_json_fails_clearly_when_gh_is_missing`,
+  `test_gh_json_runs_the_resolved_gh_path`,
   `test_asset_download_url_is_limited_to_repo_release_downloads`,
   `test_distribution_name_from_asset`,
   `test_render_project_page_skips_duplicate_non_dist_unsafe_and_wrong_project_assets`,
@@ -128,13 +134,13 @@ runs `./scripts/publish-index.sh`.
   `test_fetch_releases_fails_at_release_limit`,
   `test_main_writes_simple_index_with_mocked_release_fetch`,
   `test_main_replaces_existing_output_tree`)
-- Fail-closed handling: `scripts/regen_index.py:86-88,123-126,130-133,153-156`
-- Integrity fragments: `scripts/regen_index.py:223-225`
-- Bare `gh` invocation: `scripts/regen_index.py:80-83`
+- Fail-closed handling: `scripts/regen_index.py:89-91,126-129,133-136,156-159`
+- Integrity fragments: `scripts/regen_index.py:226-228`
+- `gh` resolution and missing-tool error: `scripts/regen_index.py:80-86`
 - Publish path: `scripts/publish-index.sh`. Workflows removed in commit
   `4a91b14` (2026-09-13).
-- Verified: 2026-11-06 with `uv run pytest tests/test_regen_index.py`
-  (18 passed) and a read of the generator and publish script.
+- Verified: 2026-11-10 with `make ci AI=1` (20 tests passed), a generator
+  run with no `gh` on `PATH`, and a read of the generator and publish script.
 
 ## Provenance
 
@@ -148,6 +154,9 @@ migrated on 2026-07-19:
 | #17 | Fail-closed on unexpected fetch failures | Trust boundary |
 | #19 | PEP 503 `#sha256=` fragments | Integrity metadata |
 | #20 | Generator test coverage | Evidence |
+
+Issue #21 shipped after the migration, on 2026-11-10. Its behavior is in
+GitHub CLI invocation.
 
 Full provenance, including node IDs and raw digests, is in the
 [migration ledger](../context/github-issue-migration-ledger.md).

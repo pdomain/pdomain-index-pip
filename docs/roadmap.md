@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-11-06
-Last verified: 2026-11-06
+Last verified: 2026-11-10
 Kind: process
 Level: I1
 ---
@@ -16,7 +16,7 @@ Level: I1
 - **Level:** I1
 - **Owner:** CT
 - **Created:** 2026-11-06
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-10
 - **Read when:** checking what is still unfinished in this repository.
 - **Search terms:** remaining work, roadmap, open issues, open plans.
 
@@ -27,11 +27,6 @@ The generated index and the local publish path are shipped.
 
 ## Still open
 
-- Resolve `gh` to an absolute path before `scripts/regen_index.py` starts it.
-  Fail with a clear error when `gh` is missing. `gh_json()` still passes the
-  bare name `gh`.
-  [Issue](issues/2026-07-19-gh-021-resolve-gh-executable.md).
-  [Plan](plans/2026-07-21-gh-executable-resolution.md).
 - Apply the rename-cluster closeout, or pick another disposition. The issue
   resolution is still open. Every task in the closeout plan is unchecked.
   [Issue](issues/2026-07-19-gh-001-015-rename-sweep.md).
