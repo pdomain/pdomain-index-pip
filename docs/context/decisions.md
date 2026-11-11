@@ -159,5 +159,5 @@ Kind: context
   and `S603` stays. The tests differ from the plan's text: they patch `shutil`
   and `subprocess` directly with typed fakes and use a raw match pattern,
   because basedpyright and Ruff `RUF043` rejected the plan's version.
-- **Removal commit:** (fill after commit)
+- **Removal commit:** `6fc197f`
 - **Remaining work:** none.
