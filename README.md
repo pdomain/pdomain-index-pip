@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-06
-Last verified: 2026-11-07
+Last verified: 2026-11-12
 Kind: usage
 -->
 
@@ -13,7 +13,7 @@ Kind: usage
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-06
-- **Last verified:** 2026-11-07
+- **Last verified:** 2026-11-12
 - **Kind:** usage
 - **Read when:** using, operating, or developing the package index.
 - **Search terms:** pip index, uv index, release assets, local development.
@@ -82,29 +82,26 @@ configured repositories' releases. Publishing also needs Git push access to
 the index repository. Configure GitHub Pages to serve from the `gh-pages`
 branch.
 
-The generator only indexes distribution assets whose normalized package name
-matches the generated simple-index project page. Historical `pd_*` assets in
-renamed repos are intentionally skipped rather than published under the new
-`pdomain-*` package names.
-
-The complete trust boundary, fail-closed behavior, and digest handling are
-documented in the
+The generator only indexes an asset when its distribution name matches that
+repository's project page. Historical `pd_*` filenames are skipped. The
+allowlist, the authentication the publish script requires, and the fail-closed
+rules are in the
 [release-asset index architecture](docs/architecture/python-release-asset-index.md).
 
 There is no cron and no safety net. A release that is not followed by `./scripts/publish-index.sh` stays invisible to installers, because the index is built from release assets rather than from the repos themselves.
 
 ## Repos covered
 
-The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distribution repo, append it there and run `./scripts/publish-index.sh`. A repo missing from that list is never indexed, however many releases it has.
+The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distribution repo, append it there and run `./scripts/publish-index.sh`. A repo missing from that list is never indexed, however many releases it has. Name matching is in the architecture doc's allowlist section.
 
 ## Tooling Releases
 
-This repo's own tooling releases do not build a Python distribution.
-`scripts/do-release.sh` sets `RELEASE_BUILD=":"`. The shared release helper
-creates a GitHub Release and attaches matching files already present under
-`dist/`, if any; otherwise it releases the tag alone. Package versions indexed
-by this repo come from publisher GitHub Release assets, not this repo's metadata
-version. GitHub-generated release notes are canonical for tooling releases.
+`make release-patch`, `make release-minor`, and `make release-major` cut a
+tooling release. They run `make ci`, push the branch and the tag, and create
+the GitHub Release. They do not rebuild or publish the index.
+`scripts/do-release.sh` sets `RELEASE_BUILD=":"`, so the release is the tag
+unless files are already under `dist/`. The mechanism is the architecture
+doc's tooling-release section.
 
 ## Why not just publish to PyPI?
 

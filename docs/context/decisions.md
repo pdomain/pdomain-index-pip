@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-14
-Last verified: 2026-11-06
+Last verified: 2026-11-12
 Kind: context
 -->
 
@@ -13,7 +13,7 @@ Kind: context
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-14
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-12
 - **Kind:** context
 - **Read when:** checking durable repository decisions and their evidence.
 - **Search terms:** decisions, docgraph migration, spec lifecycle, lint suppression.
@@ -141,3 +141,31 @@ Kind: context
 - **Evidence:** The 2026-07-19 retirement entry above records the rejected
   pattern and the choice of governed `docs/issues/` records instead.
 - **Decision unchanged:** The roadmap lists remaining work only.
+
+### 2026-11-12 — One remaining-work list, and shipped release behavior lives in architecture
+
+- **Context:** The same unfinished items were written in full in
+  `docs/roadmap.md`, `docs/context/intent-map.md`, and `docs/issues/README.md`.
+  The allowlist match, publish authentication, and tooling-release path were
+  described in the README and the scripts, and not in the architecture doc.
+- **Decision:** `docs/roadmap.md` is the only remaining-work list. The intent
+  map keeps each item's classification and points at that list. Issue files
+  keep the evidence. This refines the 2026-11-06 entry above. It does not
+  revive an archive of closed issues. Shipped allowlist matching, publish
+  authentication, and the tooling-release path now live in
+  `docs/architecture/python-release-asset-index.md`.
+- **Separate repositories:** The roadmap records four considerations. They are
+  not approved builds. The one worth a separate repository is a single shared
+  release driver: on 2026-11-12, thirteen of the repositories under
+  `/mnt/work/projects/pdomain` had `scripts/release-common.sh`, in eight
+  different SHA-256 hashes. A generic Python index library, a dep-refresh
+  product, and a rename sweep are not candidates to build from this
+  repository.
+- **Rationale:** Readers should see unfinished work in one place, and current
+  behavior in the architecture doc.
+- **Evidence:** This documentation pass. `sha256sum` of those
+  `release-common.sh` copies on 2026-11-12. A read of `scripts/regen_index.py`,
+  `scripts/publish-index.sh`, `scripts/do-release.sh`, and
+  `scripts/release-common.sh` the same day.
+- **Remaining work:** the list in `docs/roadmap.md`. The rename disposition
+  and the dep-refresh disposition are still owner decisions.

@@ -155,18 +155,18 @@ clean: ## Remove local caches and generated site output
 	rm -rf _site .pytest_cache .ruff_cache .basedpyright .ci-ai.log
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
-release-patch: ## Release: bump patch, run ci, tag, push, trigger release workflow
+release-patch: ## Release: bump patch, run ci, tag, push, create the GitHub Release locally
 	@$(MAKE) --no-print-directory _do-release BUMP=patch
 
-release-minor: ## Release: bump minor, run ci, tag, push, trigger release workflow
+release-minor: ## Release: bump minor, run ci, tag, push, create the GitHub Release locally
 	@$(MAKE) --no-print-directory _do-release BUMP=minor
 
-release-major: ## Release: bump major, run ci, tag, push, trigger release workflow
+release-major: ## Release: bump major, run ci, tag, push, create the GitHub Release locally
 	@$(MAKE) --no-print-directory _do-release BUMP=major
 
 # scripts/do-release.sh handles repo-state guards, runs the make ci pre-flight,
-# creates the three-component tag, pushes master + exact tag, then dispatches
-# .github/workflows/release.yml with that tag.
+# creates the three-component tag, pushes master + exact tag, then creates the
+# GitHub Release locally. The release workflow was removed in commit 4a91b14.
 # Pass FORCE=1 to skip repo-state guards (pre-flight still runs).
 # Pass SKIP_PUSH=1 to create the tag locally without pushing.
 _do-release:

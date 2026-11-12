@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-14
-Last verified: 2026-11-06
+Last verified: 2026-11-12
 Kind: context
 -->
 
@@ -13,7 +13,7 @@ Kind: context
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-14
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-12
 - **Kind:** context
 - **Read when:** evaluating direction, deferred work, rejected approaches, or owner decisions.
 - **Search terms:** active intent, deferred work, rejected direction, owner decision.
@@ -26,15 +26,17 @@ Kind: context
 
 ## Deferred work
 
+The [roadmap](../roadmap.md#deferred-and-where-it-belongs) holds the detail.
+These items stay deferred:
+
 - **Deferred:** Move pdomain distributions to PyPI. Each changed distribution
   needs a new version, then consumers can remove their private-index source
-  mappings. Evidence: [README](../../README.md#why-not-just-publish-to-pypi).
+  mappings. This is not a new repository.
 - **Deferred:** Automate the audit between live lint suppressions and the
-  [suppression catalogue](../conventions/lint-deviations.md). The migration
-  verified the catalogue manually. No automated drift gate exists.
+  suppression catalogue. No automated drift gate exists.
 - **Deferred:** Replace or validate the space-delimited `RELEASE_VERSION_FILES`
-  contract in `scripts/release-common.sh`. The current helper trusts a
-  maintainer-provided environment value. It cannot represent paths with spaces.
+  contract. Consider a shared release driver rather than another local fix.
+  [Consider in another repository](../roadmap.md#consider-in-another-repository).
 
 ## Rejected directions
 
@@ -49,20 +51,17 @@ None.
 
 ## Needs owner decision
 
+The [roadmap](../roadmap.md#decide-before-building) holds the detail. Neither
+decision has been made:
+
 - **Needs owner decision:** What remains of the pd-index rename effort. The
-  2026-05-16 plan those issues pointed at is still absent. A 2026-07-21 spec
-  and closeout plan say to close the cluster as superseded. They also say not
-  to create a legacy-name sweep. Every task in that plan is unchecked. The
-  issue resolution is still open. Evidence:
-  [rename sweep record](../issues/2026-07-19-gh-001-015-rename-sweep.md),
-  [closeout spec](../specs/2026-07-21-rename-cluster-supersession-design.md),
-  [closeout plan](../plans/2026-07-21-rename-cluster-supersession-closeout.md).
+  closeout that would mark the cluster superseded is not applied. Do not start
+  a legacy-name sweep from this repository.
+  [Rename sweep record](../issues/2026-07-19-gh-001-015-rename-sweep.md).
 - **Needs owner decision:** Whether the dep-refresh branch issue still needs
-  the reusable-branch fix. Commit `4a91b14` (2026-09-13) deleted
-  `.github/workflows/dep-refresh.yml` with the other GitHub Actions workflows.
-  Leftover remote `dep-refresh/*` branches and `delete_branch_on_merge` are
-  unverified. Evidence:
-  [dep-refresh issue](../issues/2026-08-08-dep-refresh-cannot-auto-land.md).
+  the reusable-branch fix. The workflow file is gone. Leftover remote branches
+  and `delete_branch_on_merge` are unverified.
+  [Dep-refresh issue](../issues/2026-08-08-dep-refresh-cannot-auto-land.md).
 
 ## Legacy-unverified sweep
 

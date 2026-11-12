@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-13
-Last verified: 2026-11-06
+Last verified: 2026-11-12
 Kind: architecture
 ---
 
@@ -13,7 +13,7 @@ Kind: architecture
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-13
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-12
 - **Kind:** architecture
 
 The index is a generated PEP 503 view over Python distributions attached to
@@ -59,6 +59,17 @@ dropping a release's files from the published index.
 Enumeration also aborts when a repository reaches `RELEASE_LIMIT`, so
 pagination must be raised before a truncated index can be published.
 
+## Allowlist
+
+`REPOS` in `scripts/regen_index.py` is the fixed list. The organization is
+`pdomain`. A repository that is not on the list is never indexed. A listed
+repository with no releases is allowed.
+
+Each listed repository gets one project page. The page name is the normalized
+repository name. An asset is linked only when the distribution name in its
+filename normalizes to that same page. The generator does not rename files. A
+historical `pd_*` asset in a renamed repository is skipped.
+
 ## GitHub CLI invocation
 
 `gh_json()` in `scripts/regen_index.py` starts `gh` by bare name, with
@@ -66,7 +77,7 @@ pagination must be raised before a truncated index can be published.
 binary. A missing `gh` shows up as a subprocess failure.
 
 An absolute path and a dedicated missing-tool error are still open on the
-[roadmap](../roadmap.md).
+[roadmap](../roadmap.md#still-to-do-in-this-repository).
 
 ## Integrity metadata
 
@@ -113,6 +124,41 @@ No workflow in this repository publishes the index. Commit `4a91b14` on
 and index regeneration. A release stays invisible to installers until someone
 runs `./scripts/publish-index.sh`.
 
+The script needs `GH_TOKEN`, or a signed-in `gh` session. When `GH_TOKEN` is
+unset, the script runs `gh auth token` and exports the result. That token must
+be able to read the allowlisted repositories' releases. The push to `gh-pages`
+also needs Git push access to this repository.
+
+GitHub Pages must serve the `gh-pages` branch directly. The script writes
+`.nojekyll` so Pages does not run Jekyll on that branch. It builds in a
+temporary directory. It does not publish the local `_site` tree.
+
+## Tooling releases
+
+This repository publishes the index. It does not publish a Python distribution
+of its own.
+
+`scripts/do-release.sh` sets `RELEASE_REPO` to `pdomain/pdomain-index-pip`,
+`RELEASE_BUILD` to `:`, and `RELEASE_PREFLIGHT` to `make ci`. It then runs
+`scripts/release-common.sh`.
+
+`make release-patch`, `make release-minor`, and `make release-major` call that
+script. The next version comes from existing `vN.N.N` git tags.
+`RELEASE_BUILD=":"` skips the build. The GitHub Release is the tag alone,
+unless files are already present under `dist/`. The helper attaches matching
+`.whl`, `.tar.gz`, and `.tgz` files when they are there. GitHub-generated
+release notes are the notes for these tooling releases.
+
+A tooling release does not regenerate the index and does not push `gh-pages`.
+Package versions that installers see come from the publisher repositories'
+release assets.
+
+`scripts/release-common.sh` is a vendored copy of the shared pdomain release
+driver. This repository uses tag-derived versions, so the space-delimited
+`RELEASE_VERSION_FILES` list is not on the path it uses today. The helper
+still contains that contract. Whether to replace it is on the
+[roadmap](../roadmap.md#consider-in-another-repository).
+
 ## Evidence
 
 - Code: `scripts/regen_index.py`, `scripts/publish-index.sh`
@@ -133,8 +179,17 @@ runs `./scripts/publish-index.sh`.
 - Bare `gh` invocation: `scripts/regen_index.py:80-83`
 - Publish path: `scripts/publish-index.sh`. Workflows removed in commit
   `4a91b14` (2026-09-13).
+- Allowlist and name match: `scripts/regen_index.py` (`REPOS`,
+  `distribution_name_from_asset`, the project-name check in
+  `render_project_page`)
+- Publish authentication and `.nojekyll`: `scripts/publish-index.sh`
+- Tooling release: `scripts/do-release.sh`, `scripts/release-common.sh`
+  (`RELEASE_BUILD`)
 - Verified: 2026-11-06 with `uv run pytest tests/test_regen_index.py`
   (18 passed) and a read of the generator and publish script.
+- Verified: 2026-11-12 by reading `scripts/regen_index.py`,
+  `scripts/publish-index.sh`, `scripts/do-release.sh`, and
+  `scripts/release-common.sh`.
 
 ## Provenance
 

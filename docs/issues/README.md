@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-15
-Last verified: 2026-11-06
+Last verified: 2026-11-12
 Kind: process
 Level: I1
 ---
@@ -14,7 +14,7 @@ Level: I1
 - **Kind:** process
 - **Status:** active
 - **Level:** I1
-- **Last verified:** 2026-11-06
+- **Last verified:** 2026-11-12
 - **Read when:** filing an issue or checking active and migrated issue records.
 - **Search terms:** issues folder, issue report, migration, issue lifecycle.
 
@@ -40,17 +40,12 @@ external issue tracker.
 
 ## Open issues
 
-The full remaining-work list, including deferred items with no issue file, is
-the [roadmap](../roadmap.md). These issue files are still open:
+The [roadmap](../roadmap.md) is the remaining-work list. These issue files are
+still open:
 
-- Resolve `gh` before subprocess invocation —
-  [issue](2026-07-19-gh-021-resolve-gh-executable.md),
-  [plan](../plans/2026-07-21-gh-executable-resolution.md).
-- The rename cluster still needs a disposition —
-  [issue](2026-07-19-gh-001-015-rename-sweep.md),
-  [plan](../plans/2026-07-21-rename-cluster-supersession-closeout.md).
-- Dep-refresh branch accumulation, after the workflow file was deleted —
-  [issue](2026-08-08-dep-refresh-cannot-auto-land.md).
+- [Resolve `gh` before subprocess invocation](2026-07-19-gh-021-resolve-gh-executable.md).
+- [The rename cluster still needs a disposition](2026-07-19-gh-001-015-rename-sweep.md).
+- [Dep-refresh branch accumulation](2026-08-08-dep-refresh-cannot-auto-land.md).
 
 ## Where shipped work is recorded
 
