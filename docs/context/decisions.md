@@ -142,6 +142,28 @@ Kind: context
   pattern and the choice of governed `docs/issues/` records instead.
 - **Decision unchanged:** The roadmap lists remaining work only.
 
+### 2026-11-10 Retired: GitHub CLI executable-resolution issue, plan, and spec
+
+- **Old paths:** `docs/issues/2026-07-19-gh-021-resolve-gh-executable.md`,
+  `docs/plans/2026-07-21-gh-executable-resolution.md`, and
+  `docs/specs/2026-07-21-gh-executable-resolution-design.md`. Read them with
+  `git show 18e8079:<path>`.
+- **Outcome:** implemented
+- **Superseded by:** the GitHub CLI invocation section of
+  `docs/architecture/python-release-asset-index.md`
+- **Evidence:** Commits `65c9a6f` and `18e8079`. The tests
+  `test_gh_json_fails_clearly_when_gh_is_missing` and
+  `test_gh_json_runs_the_resolved_gh_path` failed before the fix and pass after
+  it. With no `gh` on `PATH`, the script exits 1 with the named error.
+- **Rationale kept:** The design rejected shell invocation, checking the
+  binary's contents, and a shared resolver, because `gh_json()` is the
+  generator's only GitHub CLI boundary. The Ruff `S607` exception was removed
+  and `S603` stays. The tests differ from the plan's text: they patch `shutil`
+  and `subprocess` directly with typed fakes and use a raw match pattern,
+  because basedpyright and Ruff `RUF043` rejected the plan's version.
+- **Removal commit:** `6fc197f`
+- **Remaining work:** none.
+
 ### 2026-11-12 — One remaining-work list, and shipped release behavior lives in architecture
 
 - **Context:** The same unfinished items were written in full in

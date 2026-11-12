@@ -27,12 +27,11 @@ points here. Issue files keep the evidence. Shipped behavior is the
 
 ## Still to do in this repository
 
-- Resolve `gh` to an absolute path before `scripts/regen_index.py` starts it.
-  Fail with a clear error when `gh` is missing. `gh_json()` still passes the
-  bare name `gh`.
-  [Issue](issues/2026-07-19-gh-021-resolve-gh-executable.md).
-  [Spec](specs/2026-07-21-gh-executable-resolution-design.md).
-  [Plan](plans/2026-07-21-gh-executable-resolution.md).
+The `gh` path resolution is on `master`. It resolves `gh` before
+`scripts/regen_index.py` starts a subprocess and fails with a named error when
+`gh` is missing. The behavior is in the
+[architecture](architecture/python-release-asset-index.md#github-cli-invocation).
+No other implementation work is unfinished in this repository.
 
 ## Decide before building
 

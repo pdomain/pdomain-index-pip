@@ -74,6 +74,10 @@ Former issue URLs all follow
 | 20 | `I_kwDOSWRi3c8AAAABDJFTRQ` | `d3f25550dde98c6d1b726ca28673f1d45aaca1b9c683e9fc8f691f18d19a6251` | `docs/architecture/python-release-asset-index.md` | 2026-07-19T11:13Z | yes |
 | 21 | `I_kwDOSWRi3c8AAAABDJFTgA` | `81420bbb78642fa6f4e7bb523a546d2a9ed2e5d2656c03c7c120b08ba3c2a3c4` | `docs/issues/2026-07-19-gh-021-resolve-gh-executable.md` | 2026-07-19T11:13Z | yes |
 
+Issue #21's governed copy was removed on 2026-11-10 after the fix landed.
+The behavior is in the architecture doc's GitHub CLI invocation section. The
+destination cell above is the path written on 2026-07-19.
+
 ## Verification
 
 After each batch, the former issue URL must stop resolving and the API must

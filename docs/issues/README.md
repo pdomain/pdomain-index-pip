@@ -43,7 +43,6 @@ external issue tracker.
 The [roadmap](../roadmap.md) is the remaining-work list. These issue files are
 still open:
 
-- [Resolve `gh` before subprocess invocation](2026-07-19-gh-021-resolve-gh-executable.md).
 - [The rename cluster still needs a disposition](2026-07-19-gh-001-015-rename-sweep.md).
 - [Dep-refresh branch accumulation](2026-08-08-dep-refresh-cannot-auto-land.md).
 

@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-05-30
-Last verified: 2026-11-07
+Last verified: 2026-11-10
 Kind: process
 -->
 
@@ -13,7 +13,7 @@ Kind: process
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-05-30
-- **Last verified:** 2026-11-07
+- **Last verified:** 2026-11-10
 - **Kind:** process
 - **Read when:** adding, removing, or auditing lint and type suppressions.
 - **Search terms:** Ruff ignore, ShellCheck disable, pyright suppression, lint audit.
@@ -27,7 +27,6 @@ repository configuration.
 | --- | --- | --- |
 | `T201` for `scripts/*.py` | `pyproject.toml` | The maintenance scripts use stdout for their command-line progress and results. |
 | `S603` for `scripts/*.py` | `pyproject.toml` | `regen_index.py` invokes `gh` with argument lists constructed from the checked-in allowlist and returned release tags. The call uses no shell expansion. |
-| `S607` for `scripts/*.py` | `pyproject.toml` | `regen_index.py` passes bare `gh` to `subprocess.run`, which resolves it through `PATH`. Repository names come from the checked-in allowlist. Explicit executable resolution remains open work. |
 | `S101` for `tests/**/*.py` | `pyproject.toml` | pytest assertions are the test idiom. |
 
 ## ShellCheck

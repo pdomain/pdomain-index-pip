@@ -30,6 +30,11 @@ configuration, publication flow, and tooling-release path are in the
 `make ci` is the local verification gate. It runs Ruff, basedpyright,
 actionlint, ShellCheck, Markdown formatting checks, and pytest.
 
+`gh_json()` resolves `gh` to an absolute path before it starts a subprocess. It
+raises a named error when `gh` is not on `PATH`. The
+[architecture](../architecture/python-release-asset-index.md#github-cli-invocation)
+records the limit of that check.
+
 ## In-flight work
 
 Open work is the [roadmap](../roadmap.md). That list is the only copy. The
