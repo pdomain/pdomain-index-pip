@@ -14,7 +14,7 @@ dev = [
     "pytest>=9.1",
     # Keep this floor at the ruff-pre-commit `rev:` in .pre-commit-config.yaml.
     # Below it, `uv run ruff check` and the hook disagree on a clean tree.
-    "ruff>=0.16.7",
+    "ruff>=0.17.5",
     "shellcheck-py>=0.11.0.1",
 ]
 
