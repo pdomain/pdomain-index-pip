@@ -39,8 +39,10 @@ REPOS: list[str] = [
     "pdomain-ocr-trainer-spa",
     "pdomain-ocr-training",
     "pdomain-ops",
+    "pdomain-pgdp-api-client",
     "pdomain-pgdp-measure",
     "pdomain-prep-for-pgdp",
+    "pdomain-source-data",
 ]
 
 

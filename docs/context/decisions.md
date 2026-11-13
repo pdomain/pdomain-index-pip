@@ -191,3 +191,37 @@ Kind: context
   `scripts/release-common.sh` the same day.
 - **Remaining work:** the list in `docs/roadmap.md`. The rename disposition
   and the dep-refresh disposition are still owner decisions.
+
+### 2026-11-13 Retired: Completed GitHub Issues migration procedure
+
+- **Old path:** `docs/runbooks/github-issues-to-docgraph-migration.md`.
+- **Outcome:** implemented; retired after architecture promotion.
+- **Superseded by:** [documentation governance](../architecture/documentation-governance.md).
+- **Removal commit:** not applicable; the original path remains a short
+  retirement tombstone. The full execution procedure is available with
+  `git show bb3983a:docs/runbooks/github-issues-to-docgraph-migration.md`.
+- **Rationale kept:** Governed issues retain unresolved work; the ledger maps
+  all 21 former tickets; the append-only journal retains deletion evidence.
+  The tombstone keeps historical inbound links valid without rewriting that
+  journal. Obsolete readiness gates and batch commands are no longer live
+  execution instructions.
+- **Evidence:** Commit `e3d1b98` records completed cutover. Destination commit
+  `3c9a4df` and deletion commits `b5a6858`, `095149d`, and `6666daf`
+  support the retained ledger and journal.
+- **Remaining work:** none for tracker migration. The rename disposition
+  and dep-refresh owner decisions remain open. The active rename spec has
+  no actual recorded adversarial review; a future retirement also requires
+  that record and an applied owner disposition.
+
+### 2026-11-13 — Record the shipped local gate and release preflight
+
+- **Context:** The just migration added index regeneration to CI, so the old
+  statement that tooling releases never regenerate the index became false.
+- **Decision:** Architecture distinguishes local regeneration during
+  `just ci` from publication by `scripts/publish-index.sh`.
+- **Rationale:** Tooling preflight checks current release metadata without
+  publishing the local `_site/simple` tree.
+- **Evidence:** Commits `2ef728b` and `bb3983a`; `justfile`,
+  `scripts/do-release.sh`, and `scripts/release-common.sh`.
+- **Remaining work:** none for that documentation correction. Publication
+  and new tooling tags remain separate operations.

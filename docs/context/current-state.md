@@ -2,7 +2,7 @@
 Status: active
 Owner: CT
 Created: 2026-07-14
-Last verified: 2026-11-12
+Last verified: 2026-11-13
 Kind: context
 -->
 
@@ -13,7 +13,7 @@ Kind: context
 - **Status:** active
 - **Owner:** CT
 - **Created:** 2026-07-14
-- **Last verified:** 2026-11-12
+- **Last verified:** 2026-11-13
 - **Kind:** context
 - **Read when:** starting repository work or checking current operational truth.
 - **Search terms:** current state, index generator, CI, release workflow, risks.
@@ -30,7 +30,8 @@ configuration, publication flow, and tooling-release path are in the
 `just ci` is the local verification gate. It installs locked dependencies,
 runs pre-commit, Ruff, basedpyright, actionlint, ShellCheck, Markdown
 formatting checks, and pytest, regenerates the index, and runs strict
-docgraph checks.
+docgraph checks. Release preflight uses this gate and regenerates the local
+index; it does not publish that output.
 
 `gh_json()` resolves `gh` to an absolute path before it starts a subprocess. It
 raises a named error when `gh` is not on `PATH`. The
@@ -42,7 +43,9 @@ records the limit of that check.
 Open work is the [roadmap](../roadmap.md). That list is the only copy. The
 intent map classifies the same items and points at it.
 
-GitHub Issues is disabled, so `docs/issues/` is the issue tracker.
+GitHub Issues is disabled, so `docs/issues/` is the issue tracker. The
+[documentation governance architecture](../architecture/documentation-governance.md)
+records the completed tracker cutover and its retained audit evidence.
 
 The [migration ledger](github-issue-migration-ledger.md) maps all 21 former
 GitHub issues to their governed destinations. The

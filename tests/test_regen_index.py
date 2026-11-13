@@ -37,6 +37,12 @@ def test_repo_allowlist_uses_current_pdomain_names() -> None:
     assert not any(repo.startswith("pd-") for repo in regen_index.REPOS)
 
 
+@pytest.mark.parametrize("repo", ["pdomain-pgdp-api-client", "pdomain-source-data"])
+def test_repo_allowlist_includes_requested_packages(repo: str) -> None:
+    assert repo in regen_index.REPOS
+    assert sorted(set(regen_index.REPOS)) == regen_index.REPOS
+
+
 def test_gh_json_fails_clearly_when_gh_is_missing(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -148,6 +154,100 @@ def test_render_project_page_skips_duplicate_non_dist_unsafe_and_wrong_project_a
 
 
 FAKE_SHA256 = "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+
+
+@pytest.mark.parametrize(
+    ("repo", "distribution", "other_distribution"),
+    [
+        ("pdomain-pgdp-api-client", "pdomain_pgdp_api_client", "pdomain_source_data"),
+        ("pdomain-source-data", "pdomain_source_data", "pdomain_pgdp_api_client"),
+    ],
+)
+def test_main_indexes_requested_packages_from_release_metadata_only(
+    repo: str,
+    distribution: str,
+    other_distribution: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    wheel = f"{distribution}-1.2.3-py3-none-any.whl"
+    sdist = f"{distribution}-1.2.3.tar.gz"
+    wrong_wheel = f"{other_distribution}-1.2.3-py3-none-any.whl"
+    wrong_sdist = f"{other_distribution}-1.2.3.tar.gz"
+    release_url = f"https://github.com/pdomain/{repo}/releases/download/v1.2.3/"
+    sdist_digest = "1234567890abcdef" * 4
+    assets: list[regen_index.GitHubAsset] = [
+        {"name": wheel, "url": release_url + wheel, "digest": f"sha256:{FAKE_SHA256}"},
+        {"name": sdist, "url": release_url + sdist, "digest": f"sha256:{sdist_digest}"},
+        {"name": wrong_wheel, "url": release_url + wrong_wheel},
+        {"name": wrong_sdist, "url": release_url + wrong_sdist},
+    ]
+    observed_commands: list[list[str]] = []
+
+    def fake_gh_json(args: Sequence[str]) -> object:
+        observed_commands.append(list(args))
+        if list(args[:2]) == ["release", "list"]:
+            requested_repo = args[args.index("--repo") + 1]
+            assert list(args) == [
+                "release",
+                "list",
+                "--repo",
+                requested_repo,
+                "--limit",
+                str(regen_index.RELEASE_LIMIT),
+                "--json",
+                "tagName,name,isDraft,isPrerelease,publishedAt",
+            ]
+            if requested_repo == f"pdomain/{repo}":
+                return [
+                    {
+                        "tagName": "v1.2.3",
+                        "isDraft": False,
+                        "isPrerelease": False,
+                        "publishedAt": "2026-11-13T00:00:00Z",
+                    }
+                ]
+            return []
+        assert list(args) == [
+            "release",
+            "view",
+            "v1.2.3",
+            "--repo",
+            f"pdomain/{repo}",
+            "--json",
+            "assets",
+        ]
+        return {"assets": assets}
+
+    def unexpected_run(*_args: object, **_kwargs: object) -> None:
+        pytest.fail("index generation must use release metadata without downloading package bytes")
+
+    out = tmp_path / "simple"
+    monkeypatch.setattr(regen_index, "gh_json", fake_gh_json)
+    monkeypatch.setattr(subprocess, "run", unexpected_run)
+    monkeypatch.setattr("sys.argv", ["regen_index.py", "--out", str(out)])
+
+    assert regen_index.main() == 0
+
+    root_page = (out / "index.html").read_text(encoding="utf-8")
+    assert f'<a href="{repo}/">{repo}</a><br>' in root_page
+    project_page = (out / repo / "index.html").read_text(encoding="utf-8")
+    assert f"<h1>Links for {repo}</h1>" in project_page
+    assert f'<a href="{release_url}{wheel}#sha256={FAKE_SHA256}">{wheel}</a><br>' in project_page
+    assert f'<a href="{release_url}{sdist}#sha256={sdist_digest}">{sdist}</a><br>' in project_page
+    assert project_page.count("<a href=") == 2
+    assert wrong_wheel not in project_page
+    assert wrong_sdist not in project_page
+    empty_project = regen_index.normalize(other_distribution)
+    empty_page = (out / empty_project / "index.html").read_text(encoding="utf-8")
+    assert f"<h1>Links for {empty_project}</h1>" in empty_page
+    assert "<a href=" not in empty_page
+    assert len(observed_commands) == len(regen_index.REPOS) + 1
+    generated_files = {path.relative_to(out) for path in out.rglob("*") if path.is_file()}
+    assert generated_files == {
+        Path("index.html"),
+        *(Path(name) / "index.html" for name in regen_index.REPOS),
+    }
 
 
 def test_render_project_page_includes_sha256_fragment_when_digest_present() -> None:

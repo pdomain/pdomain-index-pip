@@ -66,6 +66,23 @@ can continue by package name on another index. See
 [the private-index decision](docs/decisions/private-index-resolution.md) for
 the full rationale. A direct local wheel path needs no index option.
 
+## Private release assets
+
+The public index lists metadata and GitHub download links; it never hosts
+private package bytes or grants repository access. The source-data and PGDP
+API client repositories are private. Index generation needs an authorized
+`gh` identity, and downloading their assets needs separate authentication. The
+generator invokes the `gh` executable rather than a shell account-selection
+function. Supply an authorized `GH_TOKEN` if that executable's active login
+lacks private-repository access.
+
+A signed-in `gh` session does not automatically authenticate `uv` or `pip`.
+When private URL installation is not verified, use authenticated
+`gh release download` for an exact tagged wheel and install that local file.
+Provision any private dependencies separately. The
+[private asset access contract](docs/architecture/python-release-asset-index.md#private-release-assets)
+records the fallback and its limits.
+
 ## How it stays up to date
 
 Run `./scripts/publish-index.sh` after cutting a release. Nothing rebuilds the index on its own: the workflows were removed on 2026-09-13, so this script is the whole path. It:
@@ -98,7 +115,8 @@ The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distri
 
 `just release-patch`, `just release-minor`, and `just release-major` cut a
 tooling release. They run `just ci`, push the branch and the tag, and create
-the GitHub Release. They do not rebuild or publish the index.
+the GitHub Release. Preflight regenerates the local index; the release does
+not publish it.
 `scripts/do-release.sh` sets `RELEASE_BUILD=":"`, so the release is the tag
 unless files are already under `dist/`. The mechanism is the architecture
 doc's tooling-release section.
@@ -137,7 +155,7 @@ just smoke-regen
 Releases are repo-code releases only. Use `just release-patch`,
 `just release-minor`, or `just release-major`; the script runs `just ci`,
 pushes the release branch and exact tag, and creates the GitHub Release.
-It does not rebuild or publish the index.
+Preflight regenerates local `_site/simple`; it does not publish that tree.
 
 Use `just --list` to see the available tasks. `AI=1 just ci` saves the full
 gate log to `.ci-ai.log` and prints one result or a failure tail.
