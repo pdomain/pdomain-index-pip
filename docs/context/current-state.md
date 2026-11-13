@@ -27,8 +27,10 @@ The current trust boundary, allowlist, digest behavior, consumer
 configuration, publication flow, and tooling-release path are in the
 [release-asset index architecture](../architecture/python-release-asset-index.md).
 
-`make ci` is the local verification gate. It runs Ruff, basedpyright,
-actionlint, ShellCheck, Markdown formatting checks, and pytest.
+`just ci` is the local verification gate. It installs locked dependencies,
+runs pre-commit, Ruff, basedpyright, actionlint, ShellCheck, Markdown
+formatting checks, and pytest, regenerates the index, and runs strict
+docgraph checks.
 
 `gh_json()` resolves `gh` to an absolute path before it starts a subprocess. It
 raises a named error when `gh` is not on `PATH`. The

@@ -35,7 +35,7 @@ surfaces.
 - `.pytest_cache/`: pytest cache.
 - `.ruff_cache/`: ruff cache.
 - `.basedpyright/`: basedpyright local state, if generated.
-- `.ci-ai.log`: compact `make AI=1 ...` command log.
+- `.ci-ai.log`: full `AI=1 just ...` command log.
 - `.docgraph/`: local docgraph index state, excluded from docgraph's own input
   scope; `docgraph.toml` is the tracked configuration.
 - `__pycache__/` and `*.pyc`: Python bytecode caches.

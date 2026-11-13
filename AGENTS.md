@@ -73,7 +73,7 @@ change any step below.
    worktree path + branch, use the `finishing-a-development-branch` skill to
    decide how to integrate.
 1. **TDD.** Write the failing test first where the plan calls for it.
-1. **Verify before committing.** Focused verification plus `make ci`.
+1. **Verify before committing.** Focused verification plus `just ci`.
 1. **Commit locally; do not push** without explicit say-so.
 
 <!-- workspace-process:end -->
@@ -114,15 +114,15 @@ GitHub release assets and publishes it as a static site.
 
 ## Commands and gates
 
-`make ci` is the full local gate. Run it before committing. The GitHub Actions
+`just ci` is the full local gate. Run it before committing. The GitHub Actions
 workflows were removed on 2026-09-13.
 
-- `make ci` — complete local CI.
-- `make static-check` — read-only checks: lint, typecheck, actionlint,
+- `just ci` — complete local CI.
+- `just static-check` — read-only checks: lint, typecheck, actionlint,
   shellcheck, docs.
-- `make test` — pytest suite.
-- `make docs-check` — Markdown formatting.
-- `make regen` — regenerate the simple index.
+- `just test` — pytest suite.
+- `just docs-check` — Markdown formatting.
+- `just regen` — regenerate the simple index.
 
 Underlying tools, when a narrower run is needed:
 

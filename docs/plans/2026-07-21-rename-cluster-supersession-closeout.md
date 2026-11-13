@@ -110,7 +110,7 @@ Run:
 ```bash
 docgraph reindex
 docgraph check --strict
-make docs-check AI=1
+AI=1 just docs-check
 ```
 
 Expected: all commands pass.
@@ -150,6 +150,6 @@ Expected: no output.
 
 - [ ] **Step 3: Run the repository gate**
 
-Run: `make ci AI=1`
+Run: `AI=1 just ci`
 
 Expected: PASS.

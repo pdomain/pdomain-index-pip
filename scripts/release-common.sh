@@ -8,7 +8,7 @@ pd_release_main() {
     FORCE=${FORCE:-0}
     SKIP_PUSH=${SKIP_PUSH:-0}
     RELEASE_BRANCH=${RELEASE_BRANCH:-master}
-    RELEASE_PREFLIGHT=${RELEASE_PREFLIGHT:-make ci-slow}
+    RELEASE_PREFLIGHT=${RELEASE_PREFLIGHT:-just ci-slow}
     RELEASE_VERSION_SOURCE=${RELEASE_VERSION_SOURCE:-tags}
     RELEASE_VERSION_FILES=${RELEASE_VERSION_FILES:-pyproject.toml uv.lock}
 
@@ -112,8 +112,8 @@ pd_release_main() {
     # The assets matter beyond the release page: the self-hosted indexes are
     # generated from them, so a release with no assets publishes nothing
     # installable. Override RELEASE_BUILD for a repo that does not build with
-    # `make build`, or set it to ":" for a repo that ships no artifacts.
-    RELEASE_BUILD=${RELEASE_BUILD:-make build}
+    # `just build`, or set it to ":" for a repo that ships no artifacts.
+    RELEASE_BUILD=${RELEASE_BUILD:-just build}
 
     if [ "$RELEASE_BUILD" != ":" ]; then
         echo "Building release artifacts: $RELEASE_BUILD"

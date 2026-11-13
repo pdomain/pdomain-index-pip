@@ -112,7 +112,7 @@ index by package name.
 ## Publication flow
 
 A maintainer publishes the index from a local checkout.
-`scripts/publish-index.sh` runs `make regen`. It writes a short landing page
+`scripts/publish-index.sh` runs `just regen`. It writes a short landing page
 and `.nojekyll`, then commits that tree to the `gh-pages` branch. GitHub Pages
 serves the branch.
 
@@ -143,10 +143,10 @@ This repository publishes the index. It does not publish a Python distribution
 of its own.
 
 `scripts/do-release.sh` sets `RELEASE_REPO` to `pdomain/pdomain-index-pip`,
-`RELEASE_BUILD` to `:`, and `RELEASE_PREFLIGHT` to `make ci`. It then runs
+`RELEASE_BUILD` to `:`, and `RELEASE_PREFLIGHT` to `just ci`. It then runs
 `scripts/release-common.sh`.
 
-`make release-patch`, `make release-minor`, and `make release-major` call that
+`just release-patch`, `just release-minor`, and `just release-major` call that
 script. The next version comes from existing `vN.N.N` git tags.
 `RELEASE_BUILD=":"` skips the build. The GitHub Release is the tag alone,
 unless files are already present under `dist/`. The helper attaches matching

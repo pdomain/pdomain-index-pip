@@ -96,8 +96,8 @@ The list lives in `scripts/regen_index.py` (`REPOS`). To add a new Python-distri
 
 ## Tooling Releases
 
-`make release-patch`, `make release-minor`, and `make release-major` cut a
-tooling release. They run `make ci`, push the branch and the tag, and create
+`just release-patch`, `just release-minor`, and `just release-major` cut a
+tooling release. They run `just ci`, push the branch and the tag, and create
 the GitHub Release. They do not rebuild or publish the index.
 `scripts/do-release.sh` sets `RELEASE_BUILD=":"`, so the release is the tag
 unless files are already under `dist/`. The mechanism is the architecture
@@ -129,14 +129,17 @@ ls /tmp/pdomain-index-pip-out/simple/
 ## Development
 
 ```sh
-make setup
-make ci
-make smoke-regen
+just setup
+just ci
+just smoke-regen
 ```
 
-Releases are repo-code releases only. Use `make release-patch`,
-`make release-minor`, or `make release-major`; the script runs `make ci`,
+Releases are repo-code releases only. Use `just release-patch`,
+`just release-minor`, or `just release-major`; the script runs `just ci`,
 pushes the release branch and exact tag, and creates the GitHub Release.
 It does not rebuild or publish the index.
+
+Use `just --list` to see the available tasks. `AI=1 just ci` saves the full
+gate log to `.ci-ai.log` and prints one result or a failure tail.
 
 Repository contributors and assistants start with [AGENTS.md](AGENTS.md).
